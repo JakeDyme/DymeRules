@@ -26,7 +26,7 @@ namespace Tests
 			stateOfTheWorld.Add("weather", "sunny");
 			stateOfTheWorld.Add("destination", "beach");
 			var inputRule = "IF (weather) IS (sunny) THEN (destination) IS (beach)";
-			var evaluatableRule = parser.ParseEvaluatable(inputRule);
+			var evaluatableRule = parser.ConvertEasyRuleToDymeRule(inputRule);
 			
 			// Act ...
 			var result = sut.ValidateRuleAgainstWorld(evaluatableRule, stateOfTheWorld);
@@ -59,7 +59,7 @@ namespace Tests
 			// Arrange ...
 			var parser = new EasyRuleDymeParser();
 			var stateOfTheWorld = GetWorldFromFlatWorld(inputWorld);
-			var evaluatableRule = parser.ParseEvaluatable(inputRule);
+			var evaluatableRule = parser.ConvertEasyRuleToDymeRule(inputRule);
 			bool expectedResult = inputResult;
 
 			// Act ...

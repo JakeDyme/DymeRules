@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>EasyRuleDymeRuleParser</id>
+    <version>1.0.0</version>
+    <authors>Jake Dyme</authors>
+    <owners>Jake Dyme</owners>
+	<licenseUrl>http://opensource.org/licenses/MS-PL</licenseUrl>
+    <projectUrl>https://github.com/JakeDyme/DymeRules</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Converts Easy-Rule sentences to Dyme-Rule structures and visa-versa</description>
+    <releaseNotes>Initial release</releaseNotes>
+    <copyright>Copyright 2018</copyright>
+    <tags>DymeRules EasyRule JsonParser</tags>
+    <dependencies>
+		<dependency id="DymeRuleEngine" version="1.0.0" />
+    </dependencies>
+  </metadata>
+</package>

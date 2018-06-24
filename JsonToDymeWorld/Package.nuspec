@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>JsonToDymeWorld</id>
+    <version>1.0.0</version>
+    <authors>Jake Dyme</authors>
+    <owners>Jake Dyme</owners>
+	<licenseUrl>http://opensource.org/licenses/MS-PL</licenseUrl>
+    <projectUrl>https://github.com/JakeDyme/DymeRules</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Converts a Json document into a Dyme world to be evaluated by a Dyme rule engine</description>
+    <releaseNotes>Initial release</releaseNotes>
+    <copyright>Copyright 2018</copyright>
+    <tags>Dyme Rules</tags>
+    <dependencies>
+		<dependency id="Newtonsoft" version="11.0.2" />
+    </dependencies>
+  </metadata>
+</package>

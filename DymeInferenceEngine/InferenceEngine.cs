@@ -1,10 +1,11 @@
 ﻿using Dyme.RuleEngine;
+using DymeRuleEngine.Constructs;
+using DymeRuleEngine.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using JsonToDymeWorldParser;
 
 namespace DymeInferenceEngine
 {
@@ -19,22 +20,19 @@ namespace DymeInferenceEngine
 
     public class InferenceEngine
     {
-        //private List<string> _worldsDatabase = new List<string>();
-        //private IEnumerable<IEvaluatable> _rulesDatabase = new List<IEvaluatable>();
-        private JsonDymeWorldParser _jsonParserSvc = new JsonDymeWorldParser();
         private RuleEngine _ruleEngineSvc = new RuleEngine();
 
-        public IEnumerable<IEvaluatable> GetRulesForWorlds(IEnumerable<string> worlds, InferenceMethod methodType)
+        public IEnumerable<IEvaluatable> GetRulesForWorlds(IEnumerable<Dictionary<string, string>> worlds, InferenceMethod methodType)
         {
-            var dymeWorlds = ParseWorlds(worlds);
-            var relevantAttributes = GetRelevantAttributes(dymeWorlds, methodType);
+            //var dymeWorlds = ParseWorlds(worlds);
+            var relevantAttributes = GetRelevantAttributes(worlds, methodType);
 
             var allRules = new List<IEvaluatable>();
             var invalidRules = new List<IEvaluatable>();
-            foreach (var dymeWorld in dymeWorlds)
+            foreach (var dymeWorld in worlds)
             {
                 var newRules = CreateCartesianImplicationsFromWorld(relevantAttributes, dymeWorld);
-                invalidRules.AddRange(GetInvalidRules(dymeWorlds, newRules));
+                invalidRules.AddRange(GetInvalidRules(worlds, newRules));
                 newRules = newRules.Where(newRule => !allRules.Contains(newRule)).ToList();
                 allRules.AddRange(newRules.Except(invalidRules));
             }
@@ -59,11 +57,6 @@ namespace DymeInferenceEngine
                     return GetAllAttributes(worlds);
             }
             throw new ArgumentOutOfRangeException();
-        }
-
-        private IEnumerable<Dictionary<string, string>> ParseWorlds(IEnumerable<string> worlds)
-        {
-            return worlds.Select(w => ParseWorld(w));
         }
 
         //public IEnumerable<IEvaluatable> UpdateRulesWithWorldAndReturnNewRules(string inputWorld)
@@ -147,11 +140,6 @@ namespace DymeInferenceEngine
         //{
         //    _worldsDatabase.Add(inputWorld);
         //}
-
-        private Dictionary<string,string> ParseWorld(string world)
-        {
-            return _jsonParserSvc.ParseJson(world);
-        }
 
         //private void UpdateRulesDatabase(IEnumerable<IEvaluatable> newValidRules)
         //{

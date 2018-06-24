@@ -8,6 +8,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JsonToDymeWorldParser;
+using DymeRuleEngine.Contracts;
+using DymeRuleEngine.Constructs;
 
 namespace DymeInferenceEngine.Tests
 {
@@ -34,8 +37,12 @@ namespace DymeInferenceEngine.Tests
                 .If(Fact.That("Age").Is("40"))
                 .Then(Fact.That("Name").Is("Bob"))
             );
+            var jsonToDymeWorldParserSvc = new JsonDymeWorldParser();
+            var world = jsonToDymeWorldParserSvc.ParseJson(world1);
+
             // Act...
-            var results = sut.GetRulesForWorlds(new[] { world1 }, InferenceMethod.Cartesian);
+
+            var results = sut.GetRulesForWorlds(new List<Dictionary<string,string>>() { world }, InferenceMethod.Cartesian);
 
             // Assert...
             Assert.AreEqual(expected, results);
@@ -46,10 +53,11 @@ namespace DymeInferenceEngine.Tests
         public void GetRulesForWorlds_GivenWorlds_ExpectRuleSetfor2Worlds()
         {
             // Arrange...
-            var worlds = new List<string>();
-            worlds.Add("{'Name':'Bob', 'Age':'40', 'Year': '2040'}");
-            worlds.Add("{'Name':'Bob', 'Age':'30', 'Year': '2030'}");
-
+            var jsonWorlds = new List<string>();
+            jsonWorlds.Add("{'Name':'Bob', 'Age':'40', 'Year': '2040'}");
+            jsonWorlds.Add("{'Name':'Bob', 'Age':'30', 'Year': '2030'}");
+            var jsonToDymeWorldParserSvc = new JsonDymeWorldParser();
+            var worlds = jsonWorlds.Select(w=> jsonToDymeWorldParserSvc.ParseJson(w));
 
             var sut = new InferenceEngine();
             var expected = new List<IEvaluatable>();
@@ -76,11 +84,14 @@ namespace DymeInferenceEngine.Tests
         public void GetRulesForWorlds_GivenWorlds_ExpectRuleSetFor3Worlds()
         {
             // Arrange...
-            var worlds = new List<string>();
-            worlds.Add("{'Name':'Bob', 'Age':'40', 'Year': '2040'}");
-            worlds.Add("{'Name':'Bob', 'Age':'30', 'Year': '2030'}");
-            worlds.Add("{'Name':'Sam', 'Age':'30', 'Year': '2030'}");
-            worlds.Add("{'Name':'Tom', 'Age':'30', 'Year': '2010'}");
+            var jsonWorlds = new List<string>();
+            jsonWorlds.Add("{'Name':'Bob', 'Age':'40', 'Year': '2040'}");
+            jsonWorlds.Add("{'Name':'Bob', 'Age':'30', 'Year': '2030'}");
+            jsonWorlds.Add("{'Name':'Sam', 'Age':'30', 'Year': '2030'}");
+            jsonWorlds.Add("{'Name':'Tom', 'Age':'30', 'Year': '2010'}");
+            var jsonToDymeWorldParserSvc = new JsonDymeWorldParser();
+            var worlds = jsonWorlds.Select(w => jsonToDymeWorldParserSvc.ParseJson(w));
+
             var sut = new InferenceEngine();
             var expected = new List<IEvaluatable>();            
             expected.Add(Imply.That().If(Fact.That("Year").Is("2040")).Then(Fact.That("Age").Is("40")));
@@ -98,11 +109,14 @@ namespace DymeInferenceEngine.Tests
         public void GetRulesForWorldsUsingDeltas_GivenWorlds_ExpectRuleSet()
         {
             // Arrange...
-            var worlds = new List<string>();
-            worlds.Add("{'Name':'Bob', 'Age':'40', 'Year': '2040'}");
-            worlds.Add("{'Name':'Bob', 'Age':'30', 'Year': '2030'}");
-            worlds.Add("{'Name':'Sam', 'Age':'30', 'Year': '2030'}");
-            worlds.Add("{'Name':'Tom', 'Age':'30', 'Year': '2010'}");
+            var jsonWorlds = new List<string>();
+            jsonWorlds.Add("{'Name':'Bob', 'Age':'40', 'Year': '2040'}");
+            jsonWorlds.Add("{'Name':'Bob', 'Age':'30', 'Year': '2030'}");
+            jsonWorlds.Add("{'Name':'Sam', 'Age':'30', 'Year': '2030'}");
+            jsonWorlds.Add("{'Name':'Tom', 'Age':'30', 'Year': '2010'}");
+            var jsonToDymeWorldParserSvc = new JsonDymeWorldParser();
+            var worlds = jsonWorlds.Select(w => jsonToDymeWorldParserSvc.ParseJson(w));
+
             var sut = new InferenceEngine();
             var expected = new List<IEvaluatable>();
             expected.Add(Imply.That().If(Fact.That("Year").Is("2040")).Then(Fact.That("Age").Is("40")));
@@ -121,11 +135,14 @@ namespace DymeInferenceEngine.Tests
         public void GetRulesForWorldsUsingMatching_GivenWorlds_ExpectRuleSet()
         {
             // Arrange...
-            var worlds = new List<string>();
-            worlds.Add("{'Name':'Bob', 'Age':'40', 'Year': '2040'}");
-            worlds.Add("{'Name':'Bob', 'Age':'30', 'Year': '2030'}");
-            worlds.Add("{'Name':'Sam', 'Age':'30', 'Year': '2030'}");
-            worlds.Add("{'Name':'Tom', 'Age':'30', 'Year': '2010'}");
+            var jsonWorlds = new List<string>();
+            jsonWorlds.Add("{'Name':'Bob', 'Age':'40', 'Year': '2040'}");
+            jsonWorlds.Add("{'Name':'Bob', 'Age':'30', 'Year': '2030'}");
+            jsonWorlds.Add("{'Name':'Sam', 'Age':'30', 'Year': '2030'}");
+            jsonWorlds.Add("{'Name':'Tom', 'Age':'30', 'Year': '2010'}");
+            var jsonToDymeWorldParserSvc = new JsonDymeWorldParser();
+            var worlds = jsonWorlds.Select(w => jsonToDymeWorldParserSvc.ParseJson(w));
+
             var sut = new InferenceEngine();
             var expected = new List<IEvaluatable>();
             expected.Add(Imply.That().If(Fact.That("Year").Is("2040")).Then(Fact.That("Age").Is("40")));
