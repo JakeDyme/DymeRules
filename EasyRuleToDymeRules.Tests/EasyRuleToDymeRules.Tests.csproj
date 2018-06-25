@@ -54,6 +54,19 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DymeRuleEngine\DymeRuleEngine.csproj">
+      <Project>{d8f3e2da-4731-4165-ba14-1a965dd52739}</Project>
+      <Name>DymeRuleEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EasyRuleToDymeRules\EasyRuleToDymeRules.csproj">
+      <Project>{a8799513-5677-48c4-b25d-e9af3a97e109}</Project>
+      <Name>EasyRuleToDymeRules</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
