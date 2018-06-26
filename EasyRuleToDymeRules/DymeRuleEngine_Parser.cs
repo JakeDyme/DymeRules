@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Dyme.RuleEngine;
 using DymeRuleEngine.Contracts;
 using DymeRuleEngine.Constructs;
 using System.Linq;
@@ -12,22 +11,37 @@ namespace EasyRule.Dyme
     {
         const string _factRegexTemplate = @"^\s*\((.+)\)\s+(#OperatorMapKeys#)\s+(setting)*\((.+)\)\s*$";
         readonly string _implyRegex = @"^\s*IF\s+(.+)\s+THEN\s+(.+)\s*$";
-        readonly string _scenarioRegex = @"^\s*(.+)\s+(AND|OR)\s+(.+)\s*$";
+        readonly string _conjunctionRegex = @"^\s*(.+)\s+(AND)\s+(.+)\s*$";
+        readonly string _disjunctionRegex = @"^\s*(.+)\s+(OR)\s+(.+)\s*$";
         readonly string _factRegex;
         readonly Dictionary<string, Predicate> _operatorMap = new Dictionary<string, Predicate>();
 
         public EasyRuleDymeParser()
         {
             _operatorMap.Add("IS", Predicate.IS);
+            _operatorMap.Add("is", Predicate.IS);
+            _operatorMap.Add("ARE", Predicate.IS);
+            _operatorMap.Add("are", Predicate.IS);
             _operatorMap.Add("MUST BE", Predicate.IS);
+            _operatorMap.Add("must be", Predicate.IS);
             _operatorMap.Add("SHOULD BE", Predicate.IS);
+            _operatorMap.Add("should be", Predicate.IS);
             _operatorMap.Add("EQUALS", Predicate.IS);
+            _operatorMap.Add("equals", Predicate.IS);
             _operatorMap.Add("GREATER THAN", Predicate.GREATER_THAN);
+            _operatorMap.Add("greater than", Predicate.GREATER_THAN);
             _operatorMap.Add("IS GREATER THAN", Predicate.GREATER_THAN);
+            _operatorMap.Add("is greater than", Predicate.GREATER_THAN);
             _operatorMap.Add("LESS THAN", Predicate.LESS_THAN);
+            _operatorMap.Add("less than", Predicate.LESS_THAN);
+            _operatorMap.Add("IS LESS THAN", Predicate.LESS_THAN);
+            _operatorMap.Add("is less than", Predicate.LESS_THAN);
             _operatorMap.Add("NOT", Predicate.NOT);
+            _operatorMap.Add("not", Predicate.NOT);
             _operatorMap.Add("CONTAINS", Predicate.CONTAINS);
+            _operatorMap.Add("contains", Predicate.CONTAINS);
             _operatorMap.Add("IN", Predicate.IN);
+            _operatorMap.Add("in", Predicate.IN);
 
             _factRegex = _factRegexTemplate.Replace("#OperatorMapKeys#", _operatorMap.Select(m => m.Key).Aggregate((a, b) => $"{a}|{b}"));
         }
@@ -46,11 +60,13 @@ namespace EasyRule.Dyme
             var constructType = construct.GetType().Name.ToString();
             switch (constructType)
             {
-                case nameof(Fact):
+                case nameof(Proposition):
                     return FactToEasyRuleFormat(construct);
-                case nameof(Scenario):
-                    return ScenarioToEasyRuleFormat(construct);
-                case nameof(Imply):
+                case nameof(Conjunction):
+                    return ConjunctionToEasyRuleFormat(construct);
+                case nameof(Disjunction):
+                    return DisjunctionToEasyRuleFormat(construct);
+                case nameof(Implication):
                     return ImplyToEasyRuleFormat(construct);
             }
             throw new ArgumentOutOfRangeException();
@@ -63,21 +79,29 @@ namespace EasyRule.Dyme
 
         private string ImplyToEasyRuleFormat(IEvaluatable construct)
         {
-            var implication = construct as Imply;
+            var implication = construct as Implication;
             return $"IF {implication.Antecedent.ToFormattedString(DymeConstructToFormattedString)} THEN {implication.Consequent.ToFormattedString(DymeConstructToFormattedString)}";
         }
 
-        private string ScenarioToEasyRuleFormat(IEvaluatable construct)
+        private string ConjunctionToEasyRuleFormat(IEvaluatable construct)
         {
-            var scenario = construct as Scenario;
+            var scenario = construct as Conjunction;
             return scenario.Arguments
                 .Select(x => x.ToFormattedString(DymeConstructToFormattedString))
-                .Aggregate((a, b) => $"{a} + {scenario.Junction} + {b}");
+                .Aggregate((a, b) => $"{a} AND {b}");
+        }
+
+        private string DisjunctionToEasyRuleFormat(IEvaluatable construct)
+        {
+            var scenario = construct as Disjunction;
+            return scenario.Arguments
+                .Select(x => x.ToFormattedString(DymeConstructToFormattedString))
+                .Aggregate((a, b) => $"{a} OR {b}");
         }
 
         private string FactToEasyRuleFormat(IEvaluatable construct)
         {
-            var fact = construct as Fact;
+            var fact = construct as Proposition;
             return $"({fact.AttributeName}) {fact.Operator} {(fact.BinaryArgument?"(setting)":"")}({fact.AttributeValue})";
         }
 
@@ -85,8 +109,10 @@ namespace EasyRule.Dyme
         {
             if (IsImplication(inputString))
                 return GetImplication(inputString);
-            if (IsScenario(inputString))
-                return GetScenario(inputString);
+            if (IsConjunction(inputString))
+                return GetConjunction(inputString);
+            if (IsDisjunction(inputString))
+                return GetDisjunction(inputString);
             if (IsTerm(inputString))
                 return GetTerm(inputString);
             throw new Exception("Syntax error. Cannot determine logic structure");
@@ -98,12 +124,16 @@ namespace EasyRule.Dyme
             return pattern.IsMatch(inputString);
         }
 
-        private bool IsScenario(string inputString)
+        private bool IsConjunction(string inputString)
         {
-            var pattern = new Regex(_scenarioRegex);
+            var pattern = new Regex(_conjunctionRegex);
             return pattern.IsMatch(inputString);
         }
-
+        private bool IsDisjunction(string inputString)
+        {
+            var pattern = new Regex(_disjunctionRegex);
+            return pattern.IsMatch(inputString);
+        }
         private bool IsTerm(string inputString)
         {
             var pattern = new Regex(_factRegex);
@@ -116,23 +146,37 @@ namespace EasyRule.Dyme
             var matches = pattern.Matches(inputString);
             var antecedent = GetEvaluatable(matches[0].Groups[1].Value);
             var consequent = GetEvaluatable(matches[0].Groups[2].Value);
-            return new Imply(antecedent, consequent);
+            return new Implication(antecedent, consequent);
         }
 
-        private IEvaluatable GetScenario(string inputString)
+        private IEvaluatable GetConjunction(string inputString)
         {
-            var pattern = new Regex(_scenarioRegex);
+            var pattern = new Regex(_conjunctionRegex);
             var matches = pattern.Matches(inputString);
             var arguments = new List<IEvaluatable>();
             arguments.Add(GetEvaluatable(matches[0].Groups[1].Value));
-            Junction junction;
-            Enum.TryParse<Junction>(matches[0].Groups[2].Value, out junction);
+
             foreach (Match match in matches)
             {
                 arguments.Add(GetEvaluatable(match.Groups[3].Value));
             }
-            return new Scenario(arguments, junction);
+            return new Conjunction(arguments);
         }
+
+        private IEvaluatable GetDisjunction(string inputString)
+        {
+            var pattern = new Regex(_disjunctionRegex);
+            var matches = pattern.Matches(inputString);
+            var arguments = new List<IEvaluatable>();
+            arguments.Add(GetEvaluatable(matches[0].Groups[1].Value));
+            foreach (Match match in matches)
+            {
+                arguments.Add(GetEvaluatable(match.Groups[3].Value));
+            }
+            return new Disjunction(arguments);
+        }
+
+
         private IEvaluatable GetTerm(string inputString)
         {
             var pattern = new Regex(_factRegex);
@@ -141,7 +185,7 @@ namespace EasyRule.Dyme
             var attributeName = matches[0].Groups[1].Value;
             var reflective = !string.IsNullOrEmpty(matches[0].Groups[3].Value);
             var attributeValue = matches[0].Groups[4].Value;
-            return new Fact(attributeName, relationalOperator, attributeValue, reflective);
+            return new Proposition(attributeName, relationalOperator, attributeValue, reflective);
         }
 
     }

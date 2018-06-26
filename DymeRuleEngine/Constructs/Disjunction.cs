@@ -6,50 +6,30 @@ using System.Linq;
 
 namespace DymeRuleEngine.Constructs
 {
-
-
     [DebuggerDisplay("{ToString()}")]
-    public class Scenario : IEvaluatable
+    public class Disjunction : IEvaluatable
     {
         public IEnumerable<IEvaluatable> Arguments { get; set; }
-        public Junction Junction { get; set; }
-        public Scenario(IEnumerable<IEvaluatable> arguments, Junction junction)
+        public Disjunction() { }
+        public Disjunction(IEnumerable<IEvaluatable> arguments)
         {
             Arguments = arguments;
-            Junction = junction;
         }
         public bool Evaluate(Dictionary<string, string> stateOfTheWorld)
         {
-            foreach (var argument in Arguments)
-            {
-                var result = argument.Evaluate(stateOfTheWorld);
-                if (FoundABadOne(result))
-                    return false;
-                if (FoundAWinner(result))
-                    return true;
-            }
-            if (Junction == Junction.AND)
-                return true;
-            if (Junction == Junction.OR)
-                return false;
-            throw new Exception("Unexpected resolution");
+            return Arguments.Any(a => FoundAWinner(a.Evaluate(stateOfTheWorld)));
         }
 
         private bool FoundAWinner(bool result)
         {
-            return Junction == Junction.OR && result == true;
+            return result == true;
         }
 
-        private bool FoundABadOne(bool result)
-        {
-            return Junction == Junction.AND && result == false;
-        }
 
         public override bool Equals(object obj)
         {
-            var inputObject = obj as Scenario;
-            return Compare(inputObject.Arguments, Arguments)
-                && inputObject.Junction.Equals(Junction);
+            var inputObject = obj as Disjunction;
+            return Compare(inputObject.Arguments, Arguments);
         }
 
         private bool Compare(IEnumerable<IEvaluatable> argumentSet1, IEnumerable<IEvaluatable> argumentSet2)
@@ -59,7 +39,7 @@ namespace DymeRuleEngine.Constructs
 
         public override string ToString()
         {
-            return Arguments.Select(x => x.ToString()).Aggregate((a, b) => a + $" {Junction} " + b);
+            return Arguments.Select(x => x.ToString()).Aggregate((a, b) => a + $" OR " + b);
         }
 
         public string ToFormattedString(Func<IEvaluatable, string> formatFunction)
@@ -69,8 +49,8 @@ namespace DymeRuleEngine.Constructs
 
         public bool RelationallyEquivalentTo(IEvaluatable evaluatable)
         {
-            if (evaluatable.GetType() != typeof(Scenario)) return false;
-            var scenario = evaluatable as Scenario;
+            if (evaluatable.GetType() != typeof(Disjunction)) return false;
+            var scenario = evaluatable as Disjunction;
             foreach (var arg in Arguments)
             {
                 if (!ScenarioContainsArgumentRelation(scenario.Arguments, arg)) return false;

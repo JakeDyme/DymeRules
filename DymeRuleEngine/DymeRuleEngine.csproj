@@ -48,8 +48,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constructs\Fact.cs" />
-    <Compile Include="Constructs\Imply.cs" />
-    <Compile Include="Constructs\Scenario.cs" />
+    <Compile Include="Constructs\Conjunction.cs" />
+    <Compile Include="Constructs\Implication.cs" />
+    <Compile Include="Constructs\Disjunction.cs" />
     <Compile Include="Contracts\Enums.cs" />
     <Compile Include="Contracts\IEvaluatable.cs" />
     <Compile Include="RuleEngine.cs" />

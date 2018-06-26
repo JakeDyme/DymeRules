@@ -25,14 +25,5 @@ namespace JsonToEasyRules
             var easyRules = dymeRules.Select(r => _easyRuleToDymeRuleParserSvc.ConvertDymeRuleToEasyRule(r)).ToList();
             return easyRules;
         }
-
-        public IEnumerable<string> SubmitRulesAndGetWorlds(IEnumerable<string> easyRules)
-        {
-            var worlds = jsonWorlds.Select(w => _jsonToDymeWorldParserSvc.ParseJson(w));
-            var dymeRules = _inferenceEngineSvc.GetRulesForWorlds(worlds, InferenceMethod.Cartesian);
-            var easyRules = dymeRules.Select(r => _easyRuleToDymeRuleParserSvc.ConvertDymeRuleToEasyRule(r)).ToList();
-            return easyRules;
-        }
-
     }
 }

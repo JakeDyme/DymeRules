@@ -1,12 +1,8 @@
 ﻿using DymeRuleEngine.Contracts;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 
 namespace Dyme.RuleEngine
 {
-
 	public class RuleEngine
 	{
 		public bool ValidateRuleAgainstWorld(IEvaluatable rule, Dictionary<string, string> stateOfTheWorld)
@@ -14,11 +10,4 @@ namespace Dyme.RuleEngine
 			return rule.Evaluate(stateOfTheWorld);
 		}
 	}
-
-
-
-
-
-
-
 }

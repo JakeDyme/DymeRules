@@ -7,7 +7,7 @@ namespace DymeRuleEngine.Constructs
 {
 
     [DebuggerDisplay("{ToString()}")]
-    public class Fact : IEvaluatable
+    public class Proposition : IEvaluatable
     {
         //private IMetricsService _metricsService;
         //public IAttributeProperties attributeProperties { get; set; }
@@ -20,8 +20,8 @@ namespace DymeRuleEngine.Constructs
         /// </summary>
         public bool BinaryArgument { get; set; } = false;
 
-        public Fact() { }
-        public Fact(string attributeName, Predicate operation, string attributeValue, bool BinaryArgument = false)
+        public Proposition() { }
+        public Proposition(string attributeName, Predicate operation, string attributeValue, bool BinaryArgument = false)
         {
             AttributeName = attributeName;
             Operator = operation;
@@ -29,43 +29,7 @@ namespace DymeRuleEngine.Constructs
             this.BinaryArgument = BinaryArgument;
         }
 
-        public static Fact That(string attributeName)
-        {
-            var newFact = new Fact();
-            newFact.AttributeName = attributeName;
-            return newFact;
-        }
 
-        public Fact Is(string value)
-        {
-            this.AttributeValue = value;
-            return this;
-        }
-        public Fact IsGreaterThan(string value)
-        {
-            this.AttributeValue = value;
-            return this;
-        }
-        public Fact IsLessThan(string value)
-        {
-            this.AttributeValue = value;
-            return this;
-        }
-        public Fact IsNot(string value)
-        {
-            this.AttributeValue = value;
-            return this;
-        }
-        public Fact Contains(string value)
-        {
-            this.AttributeValue = value;
-            return this;
-        }
-        public Fact IsIn(string value)
-        {
-            this.AttributeValue = value;
-            return this;
-        }
 
         public bool Evaluate(Dictionary<string, string> world)
         {
@@ -103,7 +67,7 @@ namespace DymeRuleEngine.Constructs
 
         public override bool Equals(object obj)
         {
-            var inputObject = obj as Fact;
+            var inputObject = obj as Proposition;
             return inputObject.AttributeName.Equals(AttributeName)
                 && inputObject.Operator.Equals(Operator)
                 && inputObject.AttributeValue.Equals(AttributeValue)
@@ -115,8 +79,8 @@ namespace DymeRuleEngine.Constructs
         }
         public bool RelationallyEquivalentTo(IEvaluatable evaluatable)
         {
-            if (evaluatable.GetType() != typeof(Fact)) return false;
-            var fact = evaluatable as Fact;
+            if (evaluatable.GetType() != typeof(Proposition)) return false;
+            var fact = evaluatable as Proposition;
             return fact.AttributeName == AttributeName;
         }
 

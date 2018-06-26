@@ -7,41 +7,25 @@ namespace DymeRuleEngine.Constructs
 {
 
     [DebuggerDisplay("{ToString()}")]
-    public class Imply : IEvaluatable
+    public class Implication : IEvaluatable
     {
         public IEvaluatable Antecedent { get; set; }
         public IEvaluatable Consequent { get; set; }
 
-        public static Imply That()
+        public static Implication Create()
         {
-            return new Imply();
+            return new Implication();
         }
+        public Implication() { }
 
-        public Imply If(IEvaluatable antecedant)
-        {
-            Antecedent = antecedant;
-            return this;
-        }
-        public Imply Then(IEvaluatable consequent)
-        {
-            Consequent = consequent;
-            return this;
-        }
-
-        public static Imply Create()
-        {
-            return new Imply();
-        }
-        private Imply() { }
-
-        public Imply(IEvaluatable antecedent, IEvaluatable consequent)
+        public Implication(IEvaluatable antecedent, IEvaluatable consequent)
         {
             Antecedent = antecedent;
             Consequent = consequent;
         }
         public override bool Equals(object obj)
         {
-            var inputObject = obj as Imply;
+            var inputObject = obj as Implication;
             return inputObject.Antecedent.Equals(Antecedent)
                 && inputObject.Consequent.Equals(Consequent);
         }
@@ -65,9 +49,9 @@ namespace DymeRuleEngine.Constructs
 
         public bool RelationallyEquivalentTo(IEvaluatable evaluatable)
         {
-            if (evaluatable.GetType() == typeof(Imply))
+            if (evaluatable.GetType() == typeof(Implication))
             {
-                var implication = evaluatable as Imply;
+                var implication = evaluatable as Implication;
                 return Antecedent.RelationallyEquivalentTo(implication.Antecedent) && Consequent.RelationallyEquivalentTo(implication.Consequent);
             }
             return false;

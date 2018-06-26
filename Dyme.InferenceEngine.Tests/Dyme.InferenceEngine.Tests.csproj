@@ -59,6 +59,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DymeFluentSyntax\DymeFluentSyntax.csproj">
+      <Project>{37e4828f-0475-41e7-ada3-154e25be068e}</Project>
+      <Name>DymeFluentSyntax</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DymeInferenceEngine\DymeInferenceEngine.csproj">
       <Project>{1E70ECCA-8E28-464A-A109-092618B7BAF2}</Project>
       <Name>DymeInferenceEngine</Name>

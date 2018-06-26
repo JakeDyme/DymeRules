@@ -1,53 +1,40 @@
-﻿using Dyme.RuleEngine;
-using DymeInferenceEngine;
-using JsonToDymeWorldParser;
-using Newtonsoft.Json;
+﻿using JsonToDymeWorldParser;
 using NUnit.Framework;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using JsonToDymeWorldParser;
 using DymeRuleEngine.Contracts;
-using DymeRuleEngine.Constructs;
+using DymeFluentSyntax;
 
 namespace DymeInferenceEngine.Tests
 {
     [TestFixture]
     public class InferenceEngine_Tests
     {
-        //private JsonDymeWorldParser _jsonParser = new JsonException();
-        //public Dictionary<string,string> GetWorldFromJson(string json){
-        //    return _jsonParser.ParseJson(json);
-        //}
         [Test]
-        public void CreateRule_GivenWorlds_ExpectSimpleImplication()
+        public void CreateRule_GivenWorlds_ExpectSimpleImply()
         {
             // Arrange...
             var world1 = "{'Name':'Bob', 'Age':'40'}";
             
             var sut = new InferenceEngine();
             var expected = new List<IEvaluatable>();
-            expected.Add(Imply.That()
-                .If(Fact.That("Name").Is("Bob"))
-                .Then(Fact.That("Age").Is("40"))
+            expected.Add(If
+                .When(ItsAFact.That("Name").Is("Bob"))
+                .Then(ItsAFact.That("Age").Is("40"))
             );
-            expected.Add(Imply.That()
-                .If(Fact.That("Age").Is("40"))
-                .Then(Fact.That("Name").Is("Bob"))
+            expected.Add(If
+                .When(ItsAFact.That("Age").Is("40"))
+                .Then(ItsAFact.That("Name").Is("Bob"))
             );
             var jsonToDymeWorldParserSvc = new JsonDymeWorldParser();
             var world = jsonToDymeWorldParserSvc.ParseJson(world1);
 
             // Act...
-
             var results = sut.GetRulesForWorlds(new List<Dictionary<string,string>>() { world }, InferenceMethod.Cartesian);
 
             // Assert...
             Assert.AreEqual(expected, results);
         }
-
         
         [Test]
         public void GetRulesForWorlds_GivenWorlds_ExpectRuleSetfor2Worlds()
@@ -61,16 +48,15 @@ namespace DymeInferenceEngine.Tests
 
             var sut = new InferenceEngine();
             var expected = new List<IEvaluatable>();
-            expected.Add(Imply.That().If(Fact.That("Year").Is("2040")).Then(Fact.That("Age").Is("40")));
-            expected.Add(Imply.That().If(Fact.That("Year").Is("2030")).Then(Fact.That("Age").Is("30")));
-            expected.Add(Imply.That().If(Fact.That("Year").Is("2040")).Then(Fact.That("Name").Is("Bob")));
-            expected.Add(Imply.That().If(Fact.That("Year").Is("2030")).Then(Fact.That("Name").Is("Bob")));
+            expected.Add(If.When(ItsAFact.That("Year").Is("2040")).Then(ItsAFact.That("Age").Is("40")));
+            expected.Add(If.When(ItsAFact.That("Year").Is("2030")).Then(ItsAFact.That("Age").Is("30")));
+            expected.Add(If.When(ItsAFact.That("Year").Is("2040")).Then(ItsAFact.That("Name").Is("Bob")));
+            expected.Add(If.When(ItsAFact.That("Year").Is("2030")).Then(ItsAFact.That("Name").Is("Bob")));
 
-            expected.Add(Imply.That().If(Fact.That("Age").Is("40")).Then(Fact.That("Name").Is("Bob")));
-            expected.Add(Imply.That().If(Fact.That("Age").Is("30")).Then(Fact.That("Name").Is("Bob")));
-            expected.Add(Imply.That().If(Fact.That("Age").Is("40")).Then(Fact.That("Year").Is("2040")));
-            expected.Add(Imply.That().If(Fact.That("Age").Is("30")).Then(Fact.That("Year").Is("2030")));
-            
+            expected.Add(If.When(ItsAFact.That("Age").Is("40")).Then(ItsAFact.That("Name").Is("Bob")));
+            expected.Add(If.When(ItsAFact.That("Age").Is("30")).Then(ItsAFact.That("Name").Is("Bob")));
+            expected.Add(If.When(ItsAFact.That("Age").Is("40")).Then(ItsAFact.That("Year").Is("2040")));
+            expected.Add(If.When(ItsAFact.That("Age").Is("30")).Then(ItsAFact.That("Year").Is("2030")));
 
             // Act...
             var results = sut.GetRulesForWorlds(worlds, InferenceMethod.Cartesian);
@@ -78,7 +64,6 @@ namespace DymeInferenceEngine.Tests
             // Assert...
             CollectionAssert.AreEquivalent(expected, results);
         }
-
 
         [Test]
         public void GetRulesForWorlds_GivenWorlds_ExpectRuleSetFor3Worlds()
@@ -94,9 +79,9 @@ namespace DymeInferenceEngine.Tests
 
             var sut = new InferenceEngine();
             var expected = new List<IEvaluatable>();            
-            expected.Add(Imply.That().If(Fact.That("Year").Is("2040")).Then(Fact.That("Age").Is("40")));
-            expected.Add(Imply.That().If(Fact.That("Year").Is("2030")).Then(Fact.That("Age").Is("30")));
-            expected.Add(Imply.That().If(Fact.That("Year").Is("2010")).Then(Fact.That("Age").Is("30")));
+            expected.Add(If.When(ItsAFact.That("Year").Is("2040")).Then(ItsAFact.That("Age").Is("40")));
+            expected.Add(If.When(ItsAFact.That("Year").Is("2030")).Then(ItsAFact.That("Age").Is("30")));
+            expected.Add(If.When(ItsAFact.That("Year").Is("2010")).Then(ItsAFact.That("Age").Is("30")));
             
             // Act...
             var results = sut.GetRulesForWorlds(worlds, InferenceMethod.Cartesian);
@@ -119,9 +104,9 @@ namespace DymeInferenceEngine.Tests
 
             var sut = new InferenceEngine();
             var expected = new List<IEvaluatable>();
-            expected.Add(Imply.That().If(Fact.That("Year").Is("2040")).Then(Fact.That("Age").Is("40")));
-            expected.Add(Imply.That().If(Fact.That("Year").Is("2030")).Then(Fact.That("Age").Is("30")));
-            expected.Add(Imply.That().If(Fact.That("Year").Is("2010")).Then(Fact.That("Age").Is("30")));
+            expected.Add(If.When(ItsAFact.That("Year").Is("2040")).Then(ItsAFact.That("Age").Is("40")));
+            expected.Add(If.When(ItsAFact.That("Year").Is("2030")).Then(ItsAFact.That("Age").Is("30")));
+            expected.Add(If.When(ItsAFact.That("Year").Is("2010")).Then(ItsAFact.That("Age").Is("30")));
 
             // Act...
             var results = sut.GetRulesForWorlds(worlds, InferenceMethod.ByWorldDeltas);
@@ -129,7 +114,6 @@ namespace DymeInferenceEngine.Tests
             // Assert...
             CollectionAssert.AreEquivalent(expected, results);
         }
-
 
         [Test]
         public void GetRulesForWorldsUsingMatching_GivenWorlds_ExpectRuleSet()
@@ -145,9 +129,9 @@ namespace DymeInferenceEngine.Tests
 
             var sut = new InferenceEngine();
             var expected = new List<IEvaluatable>();
-            expected.Add(Imply.That().If(Fact.That("Year").Is("2040")).Then(Fact.That("Age").Is("40")));
-            expected.Add(Imply.That().If(Fact.That("Year").Is("2030")).Then(Fact.That("Age").Is("30")));
-            expected.Add(Imply.That().If(Fact.That("Year").Is("2010")).Then(Fact.That("Age").Is("30")));
+            expected.Add(If.When(ItsAFact.That("Year").Is("2040")).Then(ItsAFact.That("Age").Is("40")));
+            expected.Add(If.When(ItsAFact.That("Year").Is("2030")).Then(ItsAFact.That("Age").Is("30")));
+            expected.Add(If.When(ItsAFact.That("Year").Is("2010")).Then(ItsAFact.That("Age").Is("30")));
 
             // Act...
             var results = sut.GetRulesForWorlds(worlds, InferenceMethod.ByWorldMatching);
@@ -155,6 +139,5 @@ namespace DymeInferenceEngine.Tests
             // Assert...
             CollectionAssert.AreEquivalent(expected, results);
         }
-
     }
 }

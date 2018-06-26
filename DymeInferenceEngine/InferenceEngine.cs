@@ -4,13 +4,9 @@ using DymeRuleEngine.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DymeInferenceEngine
 {
-
-   
     public enum InferenceMethod
     {
         Cartesian,
@@ -222,11 +218,11 @@ namespace DymeInferenceEngine
             }
         }
 
-        private Imply CreateFullyInclusiveImplicationFromWorld(IEnumerable<string> attNames, Dictionary<string, string> world1)
+        private Implication CreateFullyInclusiveImplicationFromWorld(IEnumerable<string> attNames, Dictionary<string, string> world1)
         {
             var orScenario = CreateOptionalScenarioFromWorld(attNames, world1);
             var andScenario = CreateCompositeScenarioFromWorld(attNames, world1);
-            return new Imply(orScenario, andScenario);
+            return new Implication(orScenario, andScenario);
         }
 
         private IEnumerable<string> GetSimilarAttributes(IEnumerable<string> commonAttributes, Dictionary<string, string> world1, Dictionary<string, string> world2)
@@ -244,21 +240,21 @@ namespace DymeInferenceEngine
             return world1.Where(w => w.Value == world2[w.Key]).Select(w => w.Key).ToList();
         }
 
-        private Scenario CreateOptionalScenarioFromWorld(IEnumerable<string> attNames, Dictionary<string, string> world)
+        private Disjunction CreateOptionalScenarioFromWorld(IEnumerable<string> attNames, Dictionary<string, string> world)
         {
             var facts = CreateFactListFromWorld(attNames, world);
-            return new Scenario(facts, Junction.OR);
+            return new Disjunction(facts);
         }
 
-        private Scenario CreateCompositeScenarioFromWorld(IEnumerable<string> attNames, Dictionary<string, string> world)
+        private Conjunction CreateCompositeScenarioFromWorld(IEnumerable<string> attNames, Dictionary<string, string> world)
         {
             var facts = CreateFactListFromWorld(attNames, world);
-            return new Scenario(facts, Junction.AND);
+            return new Conjunction(facts);
         }
 
-        private List<Fact> CreateFactListFromWorld(IEnumerable<string> attNames, Dictionary<string, string> world)
+        private List<Proposition> CreateFactListFromWorld(IEnumerable<string> attNames, Dictionary<string, string> world)
         {
-            var facts = new List<Fact>();
+            var facts = new List<Proposition>();
             foreach (var attName in attNames)
             {
                 var fact = CreateUnaryFactFromAttribute(world, attName);
@@ -268,9 +264,9 @@ namespace DymeInferenceEngine
             return facts;
         }
 
-        private IEnumerable<Imply> CreateCartesianImplicationsFromWorld(IEnumerable<string> attNames, Dictionary<string, string> world)
+        private IEnumerable<Implication> CreateCartesianImplicationsFromWorld(IEnumerable<string> attNames, Dictionary<string, string> world)
         {
-            var implications = new List<Imply>();
+            var implications = new List<Implication>();
             var attributePairs = CreateAttributeCombinations(attNames);
             return attributePairs
                 .Where(pair => world.ContainsKey(pair.Item1) && world.ContainsKey(pair.Item2))
@@ -304,17 +300,17 @@ namespace DymeInferenceEngine
             return pairs;
         }
 
-        private Imply CreateImplicationBetweenAttributes(string att1Name, string att2Name, Dictionary<string, string> world1)
+        private Implication CreateImplicationBetweenAttributes(string att1Name, string att2Name, Dictionary<string, string> world1)
         {
             var ifSide = CreateUnaryFactFromAttribute(world1, att1Name);
             var thenSide = CreateUnaryFactFromAttribute(world1, att2Name);
-            var newRule = new Imply(ifSide, thenSide);
+            var newRule = new Implication(ifSide, thenSide);
             return newRule;
         }
 
-        private Fact CreateUnaryFactFromAttribute(Dictionary<string, string> world1, string attName)
+        private Proposition CreateUnaryFactFromAttribute(Dictionary<string, string> world1, string attName)
         {
-            return Fact.That(attName).Is(world1[attName]);
+            return new Proposition(attName, Predicate.IS, world1[attName]);
         }
 
         private IEnumerable<string> GetAllAttributes(IEnumerable<Dictionary<string, string>> worlds)

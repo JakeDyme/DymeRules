@@ -25,6 +25,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{3E9043EB
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonEasyRules.Tests", "JsonEasyRules.Tests\JsonEasyRules.Tests.csproj", "{F214C40A-B8DA-44AB-8046-25B02829AA41}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DymeFluentSyntax", "DymeFluentSyntax\DymeFluentSyntax.csproj", "{37E4828F-0475-41E7-ADA3-154E25BE068E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,10 @@ Global
 		{F214C40A-B8DA-44AB-8046-25B02829AA41}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F214C40A-B8DA-44AB-8046-25B02829AA41}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F214C40A-B8DA-44AB-8046-25B02829AA41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37E4828F-0475-41E7-ADA3-154E25BE068E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37E4828F-0475-41E7-ADA3-154E25BE068E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37E4828F-0475-41E7-ADA3-154E25BE068E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37E4828F-0475-41E7-ADA3-154E25BE068E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
