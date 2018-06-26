@@ -10,10 +10,27 @@ namespace EasyRule.Dyme
 {
     public class EasyRuleDymeParser
     {
-        const string _implyRegex = @"^\s*IF\s+(.+)\s+THEN\s+(.+)\s*$";
-        const string _scenarioRegex = @"^\s*(.+)\s+(AND|OR)\s+(.+)\s*$";
-        const string _factRegex = @"^\s*\((.+)\)\s+(IS|NOT|GREATER THAN|LESS THAN|CONTAINS|IN)\s+(setting)*\((.+)\)\s*$";
+        const string _factRegexTemplate = @"^\s*\((.+)\)\s+(#OperatorMapKeys#)\s+(setting)*\((.+)\)\s*$";
+        readonly string _implyRegex = @"^\s*IF\s+(.+)\s+THEN\s+(.+)\s*$";
+        readonly string _scenarioRegex = @"^\s*(.+)\s+(AND|OR)\s+(.+)\s*$";
+        readonly string _factRegex;
+        readonly Dictionary<string, Predicate> _operatorMap = new Dictionary<string, Predicate>();
 
+        public EasyRuleDymeParser()
+        {
+            _operatorMap.Add("IS", Predicate.IS);
+            _operatorMap.Add("MUST BE", Predicate.IS);
+            _operatorMap.Add("SHOULD BE", Predicate.IS);
+            _operatorMap.Add("EQUALS", Predicate.IS);
+            _operatorMap.Add("GREATER THAN", Predicate.GREATER_THAN);
+            _operatorMap.Add("IS GREATER THAN", Predicate.GREATER_THAN);
+            _operatorMap.Add("LESS THAN", Predicate.LESS_THAN);
+            _operatorMap.Add("NOT", Predicate.NOT);
+            _operatorMap.Add("CONTAINS", Predicate.CONTAINS);
+            _operatorMap.Add("IN", Predicate.IN);
+
+            _factRegex = _factRegexTemplate.Replace("#OperatorMapKeys#", _operatorMap.Select(m => m.Key).Aggregate((a, b) => $"{a}|{b}"));
+        }
         public IEvaluatable ConvertEasyRuleToDymeRule(string ruleString)
         {
             return GetEvaluatable(ruleString);
@@ -26,7 +43,7 @@ namespace EasyRule.Dyme
 
         public string DymeConstructToFormattedString(IEvaluatable construct)
         {
-            var constructType = construct.GetType().ToString();
+            var constructType = construct.GetType().Name.ToString();
             switch (constructType)
             {
                 case nameof(Fact):
@@ -39,10 +56,15 @@ namespace EasyRule.Dyme
             throw new ArgumentOutOfRangeException();
         }
 
+        private string GetDataType(Type type)
+        {
+            return type.GetType().ToString();
+        }
+
         private string ImplyToEasyRuleFormat(IEvaluatable construct)
         {
             var implication = construct as Imply;
-            return $"IF {implication.Antecedent} THEN {implication.Consequent}";
+            return $"IF {implication.Antecedent.ToFormattedString(DymeConstructToFormattedString)} THEN {implication.Consequent.ToFormattedString(DymeConstructToFormattedString)}";
         }
 
         private string ScenarioToEasyRuleFormat(IEvaluatable construct)
@@ -56,7 +78,7 @@ namespace EasyRule.Dyme
         private string FactToEasyRuleFormat(IEvaluatable construct)
         {
             var fact = construct as Fact;
-            return $"({fact.AttributeName}) {fact.Operator} {(fact.BinaryArgument?"(setting)":"")} ({fact.AttributeValue})";
+            return $"({fact.AttributeName}) {fact.Operator} {(fact.BinaryArgument?"(setting)":"")}({fact.AttributeValue})";
         }
 
         private IEvaluatable GetEvaluatable(string inputString)
@@ -115,12 +137,12 @@ namespace EasyRule.Dyme
         {
             var pattern = new Regex(_factRegex);
             var matches = pattern.Matches(inputString);
-            Predicate relationalOperator;
-            Enum.TryParse<Predicate>(matches[0].Groups[2].Value.Replace(' ', '_'), out relationalOperator);
+            Predicate relationalOperator = _operatorMap[matches[0].Groups[2].Value];
             var attributeName = matches[0].Groups[1].Value;
             var reflective = !string.IsNullOrEmpty(matches[0].Groups[3].Value);
             var attributeValue = matches[0].Groups[4].Value;
             return new Fact(attributeName, relationalOperator, attributeValue, reflective);
         }
+
     }
 }

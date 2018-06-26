@@ -17,14 +17,26 @@ namespace EasyRuleToDymeRules.Tests
         {
             // Arrange...
             var sut = new EasyRuleDymeParser();
-            var inputEasyRule = "IF (Age IS 18) THEN (Movie IS Visible)";
+            var inputEasyRule = "IF (Age) IS (18) THEN (Movie) IS (Visible)";
             var expectDymeRule = Imply.Create().If(Fact.That("Age").Is("18")).Then(Fact.That("Movie").Is("Visible"));
             // Act...
             var result = sut.ConvertEasyRuleToDymeRule(inputEasyRule);
 
             Assert.AreEqual(expectDymeRule, result);
         }
-        
+
+        [Test]
+        public void EasyRuleDymeParser_GivenDymeRules_ExpectEasyRules()
+        {
+            // Arrange...
+            var sut = new EasyRuleDymeParser();
+            var expectEasyRule = "IF (Age) IS (18) THEN (Movie) IS (Visible)";
+            var inputDymeRule = Imply.Create().If(Fact.That("Age").Is("18")).Then(Fact.That("Movie").Is("Visible"));
+            // Act...
+            var result = sut.ConvertDymeRuleToEasyRule(inputDymeRule);
+
+            Assert.AreEqual(expectEasyRule, result);
+        }
 
     }
 }
