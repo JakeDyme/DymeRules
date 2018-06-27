@@ -45,6 +45,7 @@ namespace DymeInferenceEngine.Tests
             var jsonWorlds = new List<string>();
             jsonWorlds.Add("{'Name':'Bob', 'Age':'40', 'Year': '2040'}");
             jsonWorlds.Add("{'Name':'Bob', 'Age':'30', 'Year': '2030'}");
+
             var jsonToDymeWorldParserSvc = new JsonDymeWorldConverter();
             var worlds = jsonWorlds.Select(w=> jsonToDymeWorldParserSvc.ParseJson(w));
 
@@ -54,7 +55,6 @@ namespace DymeInferenceEngine.Tests
             expected.Add(If.When(ItsAFact.That("Year").Is("2030")).Then(ItsAFact.That("Age").Is("30")));
             expected.Add(If.When(ItsAFact.That("Year").Is("2040")).Then(ItsAFact.That("Name").Is("Bob")));
             expected.Add(If.When(ItsAFact.That("Year").Is("2030")).Then(ItsAFact.That("Name").Is("Bob")));
-
             expected.Add(If.When(ItsAFact.That("Age").Is("40")).Then(ItsAFact.That("Name").Is("Bob")));
             expected.Add(If.When(ItsAFact.That("Age").Is("30")).Then(ItsAFact.That("Name").Is("Bob")));
             expected.Add(If.When(ItsAFact.That("Age").Is("40")).Then(ItsAFact.That("Year").Is("2040")));
@@ -80,7 +80,7 @@ namespace DymeInferenceEngine.Tests
             var worlds = jsonWorlds.Select(w => jsonToDymeWorldParserSvc.ParseJson(w));
 
             var sut = new DymeInferenceEvaluator();
-            var expected = new List<IEvaluatable>();            
+            var expected = new List<IEvaluatable>();
             expected.Add(If.When(ItsAFact.That("Year").Is("2040")).Then(ItsAFact.That("Age").Is("40")));
             expected.Add(If.When(ItsAFact.That("Year").Is("2030")).Then(ItsAFact.That("Age").Is("30")));
             expected.Add(If.When(ItsAFact.That("Year").Is("2010")).Then(ItsAFact.That("Age").Is("30")));

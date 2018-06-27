@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>JsonEasyRule</id>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <authors>Jake Dyme</authors>
     <owners>Jake Dyme</owners>
 	<licenseUrl>http://opensource.org/licenses/MS-PL</licenseUrl>
@@ -13,8 +13,8 @@
     <copyright>Copyright 2018</copyright>
     <tags>DymeRules EasyRule JsonParser</tags>
     <dependencies>
-		  <dependency id="EasyRuleDymeRule" version="1.0.0" />
-      <dependency id="DymeInferenceEngine" version="1.0.0" />
+		  <dependency id="EasyRuleDymeRule" version="1.0.1" />
+      <dependency id="DymeInferenceEngine" version="1.0.1" />
     </dependencies>
   </metadata>
 </package>

@@ -15,6 +15,7 @@ namespace JsonToDymeWorldParser.Tests
 			var sut = new JsonDymeWorldConverter();
 			var inputData = "{\"Person\":{\"Name\":\"Jake\",\"Age\":35,\"Married\":false}}";
 			var expected = new Dictionary<string, string>();
+
 			expected.Add("Person.Name", "Jake");
 			expected.Add("Person.Age", "35");
 			expected.Add("Person.Married", "false");
