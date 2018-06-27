@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("DymeFluentSyntax")]
+[assembly: AssemblyTitle("DymeFluentAdapter")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("TEAM OS")]
-[assembly: AssemblyProduct("DymeFluentSyntax")]
+[assembly: AssemblyCompany("DymeStack")]
+[assembly: AssemblyProduct("DymeFluentAdapter")]
 [assembly: AssemblyCopyright("Copyright © TEAM OS 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

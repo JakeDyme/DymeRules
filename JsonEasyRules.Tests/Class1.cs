@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using JsonToEasyRules;
+using JsonToEasyRules.Services;
 using System.Collections.Generic;
 
 namespace JsonEasyRulesTests
@@ -21,7 +21,7 @@ namespace JsonEasyRulesTests
             expectedRules.Add("IF (Year) IS (2030) THEN (Age) IS (30)");
             expectedRules.Add("IF (Year) IS (2010) THEN (Age) IS (30)");
 
-            var sut = new JsonEasyRules();
+            var sut = new JsonEasyRuleConverter();
             // Act...
             var result = sut.SubmitJsonWorldsAndGetInferredEasyRules(jsonWorlds);
 

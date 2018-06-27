@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>EasyRuleDymeRuleParser</id>
+    <id>EasyRuleDymeRule</id>
     <version>1.0.0</version>
     <authors>Jake Dyme</authors>
     <owners>Jake Dyme</owners>

@@ -48,24 +48,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EasyRuleToDymeRulesTests.cs" />
+    <Compile Include="EasyRuleDymeRuleConverter_Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DymeFluentSyntax\DymeFluentSyntax.csproj">
+    <ProjectReference Include="..\DymeFluentSyntax\DymeFluentAdapter.csproj">
       <Project>{37E4828F-0475-41E7-ADA3-154E25BE068E}</Project>
-      <Name>DymeFluentSyntax</Name>
+      <Name>DymeFluentAdapter</Name>
     </ProjectReference>
     <ProjectReference Include="..\DymeRuleEngine\DymeRuleEngine.csproj">
       <Project>{d8f3e2da-4731-4165-ba14-1a965dd52739}</Project>
       <Name>DymeRuleEngine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\EasyRuleToDymeRules\EasyRuleToDymeRules.csproj">
+    <ProjectReference Include="..\EasyRuleToDymeRules\EasyRuleDymeRule.csproj">
       <Project>{a8799513-5677-48c4-b25d-e9af3a97e109}</Project>
-      <Name>EasyRuleToDymeRules</Name>
+      <Name>EasyRuleDymeRule</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using JsonDymeWorld.Services;
+using NUnit.Framework;
 using System.Collections.Generic;
 
 namespace JsonToDymeWorldParser.Tests
@@ -11,7 +12,7 @@ namespace JsonToDymeWorldParser.Tests
 		public void ParseWorld_GivenJsonObject_ExpectWorld()
 		{
 			// Arrange...
-			var sut = new JsonDymeWorldParser();
+			var sut = new JsonDymeWorldConverter();
 			var inputData = "{\"Person\":{\"Name\":\"Jake\",\"Age\":35,\"Married\":false}}";
 			var expected = new Dictionary<string, string>();
 			expected.Add("Person.Name", "Jake");
@@ -32,7 +33,7 @@ namespace JsonToDymeWorldParser.Tests
 		public void ParseWorld_GivenJsonObject_ExpectWorld(string inputJson, string expectedKey, string expectedValue)
 		{
 			// Arrange...
-			var sut = new JsonDymeWorldParser();
+			var sut = new JsonDymeWorldConverter();
 
 			// Act...
 			var result = sut.ParseJson(inputJson);

@@ -59,9 +59,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DymeFluentSyntax\DymeFluentSyntax.csproj">
+    <ProjectReference Include="..\DymeFluentSyntax\DymeFluentAdapter.csproj">
       <Project>{37e4828f-0475-41e7-ada3-154e25be068e}</Project>
-      <Name>DymeFluentSyntax</Name>
+      <Name>DymeFluentAdapter</Name>
     </ProjectReference>
     <ProjectReference Include="..\DymeInferenceEngine\DymeInferenceEngine.csproj">
       <Project>{1E70ECCA-8E28-464A-A109-092618B7BAF2}</Project>
@@ -71,9 +71,9 @@
       <Project>{D8F3E2DA-4731-4165-BA14-1A965DD52739}</Project>
       <Name>DymeRuleEngine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\JsonToDymeWorld\JsonToDymeWorld.csproj">
+    <ProjectReference Include="..\JsonToDymeWorld\JsonDymeWorld.csproj">
       <Project>{22EB099A-7C42-463C-B448-DD20FE820B72}</Project>
-      <Name>JsonToDymeWorld</Name>
+      <Name>JsonDymeWorld</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

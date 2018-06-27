@@ -62,9 +62,9 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\JsonToDymeWorld\JsonToDymeWorld.csproj">
+    <ProjectReference Include="..\JsonToDymeWorld\JsonDymeWorld.csproj">
       <Project>{22eb099a-7c42-463c-b448-dd20fe820b72}</Project>
-      <Name>JsonToDymeWorld</Name>
+      <Name>JsonDymeWorld</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

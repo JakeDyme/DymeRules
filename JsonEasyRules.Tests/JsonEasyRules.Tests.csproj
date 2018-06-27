@@ -55,9 +55,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\JsonEasyRules\JsonEasyRules.csproj">
+    <ProjectReference Include="..\JsonEasyRules\JsonEasyRule.csproj">
       <Project>{693cb165-c637-4a98-a617-41d8c1866405}</Project>
-      <Name>JsonEasyRules</Name>
+      <Name>JsonEasyRule</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

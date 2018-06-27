@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("DymeInferenceEngine")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("TEAM OS")]
+[assembly: AssemblyCompany("DymeStack")]
 [assembly: AssemblyProduct("DymeInferenceEngine")]
 [assembly: AssemblyCopyright("Copyright © TEAM OS 2018")]
 [assembly: AssemblyTrademark("")]

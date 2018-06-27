@@ -5,9 +5,9 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DymeRuleEngine", "DymeRuleEngine\DymeRuleEngine.csproj", "{D8F3E2DA-4731-4165-BA14-1A965DD52739}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyRuleToDymeRules", "EasyRuleToDymeRules\EasyRuleToDymeRules.csproj", "{A8799513-5677-48C4-B25D-E9AF3A97E109}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyRuleDymeRule", "EasyRuleToDymeRules\EasyRuleDymeRule.csproj", "{A8799513-5677-48C4-B25D-E9AF3A97E109}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonToDymeWorld", "JsonToDymeWorld\JsonToDymeWorld.csproj", "{22EB099A-7C42-463C-B448-DD20FE820B72}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonDymeWorld", "JsonToDymeWorld\JsonDymeWorld.csproj", "{22EB099A-7C42-463C-B448-DD20FE820B72}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonToDymeWorld.Tests", "JsonToDymeWorld.Tests\JsonToDymeWorld.Tests.csproj", "{7F45C418-E8E0-413D-BF68-0D59B6878E87}"
 EndProject
@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DymeInferenceEngine", "Dyme
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dyme.InferenceEngine.Tests", "Dyme.InferenceEngine.Tests\Dyme.InferenceEngine.Tests.csproj", "{6D8CF43E-2D91-4839-B2F4-9999EA703E89}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonEasyRules", "JsonEasyRules\JsonEasyRules.csproj", "{693CB165-C637-4A98-A617-41D8C1866405}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonEasyRule", "JsonEasyRules\JsonEasyRule.csproj", "{693CB165-C637-4A98-A617-41D8C1866405}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyRuleToDymeRules.Tests", "EasyRuleToDymeRules.Tests\EasyRuleToDymeRules.Tests.csproj", "{ACC8053C-183C-4187-820A-00A807AE19FC}"
 EndProject
@@ -25,7 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{3E9043EB
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonEasyRules.Tests", "JsonEasyRules.Tests\JsonEasyRules.Tests.csproj", "{F214C40A-B8DA-44AB-8046-25B02829AA41}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DymeFluentSyntax", "DymeFluentSyntax\DymeFluentSyntax.csproj", "{37E4828F-0475-41E7-ADA3-154E25BE068E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DymeFluentAdapter", "DymeFluentSyntax\DymeFluentAdapter.csproj", "{37E4828F-0475-41E7-ADA3-154E25BE068E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("EasyRuleToDymeRules")]
+[assembly: AssemblyTitle("EasyRuleDymeRule")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("TEAM OS")]
-[assembly: AssemblyProduct("EasyRuleToDymeRules")]
+[assembly: AssemblyCompany("DymeStack")]
+[assembly: AssemblyProduct("EasyRuleDymeRule")]
 [assembly: AssemblyCopyright("Copyright © TEAM OS 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

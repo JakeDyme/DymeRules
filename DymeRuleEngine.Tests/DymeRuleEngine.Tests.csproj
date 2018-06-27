@@ -48,7 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EasyRule_Tests.cs" />
+    <Compile Include="DymeRuleEvaluator_Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -59,9 +59,9 @@
       <Project>{d8f3e2da-4731-4165-ba14-1a965dd52739}</Project>
       <Name>DymeRuleEngine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\EasyRuleToDymeRules\EasyRuleToDymeRules.csproj">
+    <ProjectReference Include="..\EasyRuleToDymeRules\EasyRuleDymeRule.csproj">
       <Project>{A8799513-5677-48C4-B25D-E9AF3A97E109}</Project>
-      <Name>EasyRuleToDymeRules</Name>
+      <Name>EasyRuleDymeRule</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

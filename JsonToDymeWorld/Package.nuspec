@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>JsonToDymeWorld</id>
+    <id>JsonDymeWorld</id>
     <version>1.0.0</version>
     <authors>Jake Dyme</authors>
     <owners>Jake Dyme</owners>
