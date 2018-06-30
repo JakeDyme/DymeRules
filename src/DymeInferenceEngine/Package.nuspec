@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>DymeInferenceEngine</id>
+    <version>1.0.2</version>
+    <authors>Jake Dyme</authors>
+    <owners>Jake Dyme</owners>
+	<licenseUrl>http://opensource.org/licenses/MS-PL</licenseUrl>
+    <projectUrl>https://github.com/JakeDyme/DymeRules</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/JakeDyme/DymeRules/master/bushbaby.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Infer rules from worlds</description>
+    <releaseNotes>Initial release</releaseNotes>
+    <copyright>Copyright 2018</copyright>
+    <tags>DymeRules EasyRule JsonParser</tags>
+    <dependencies>
+		<dependency id="DymeRuleEngine" version="1.0.2" />
+    </dependencies>
+  </metadata>
+</package>

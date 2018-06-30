@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>JsonEasyRule</id>
+    <version>1.0.2</version>
+    <authors>Jake Dyme</authors>
+    <owners>Jake Dyme</owners>
+	<licenseUrl>http://opensource.org/licenses/MS-PL</licenseUrl>
+    <projectUrl>https://github.com/JakeDyme/DymeRules</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/JakeDyme/DymeRules/master/bushbaby.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Evaluates rules against worlds</description>
+    <releaseNotes>Initial release</releaseNotes>
+    <copyright>Copyright 2018</copyright>
+    <tags>DymeRules EasyRule JsonParser</tags>
+    <dependencies>
+		  <dependency id="EasyRuleDymeRule" version="1.0.2" />
+      <dependency id="DymeInferenceEngine" version="1.0.2" />
+    </dependencies>
+  </metadata>
+</package>
