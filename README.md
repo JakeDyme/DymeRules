@@ -53,11 +53,11 @@ COMPARERS:
 - subset: in
 
 EXAMPLES:
-("SKY_COLOR") is ("blue")
-("SKY_COLOR") is (setting)("SEA_COLOR")
-("SKY_COLOR") is not ("red")
-("SKY_COLOR") is not (setting)("GROUND_COLOR")
-("SKY_COLOR") in ("blueish")
-("SKY_COLOR") contains ("blu")
-("PLANET_AGE") greater than ("2000000")
-("PLANET_AGE") less than (setting)("SUN_AGE")
+- ("SKY_COLOR") is ("blue")
+- ("SKY_COLOR") is (setting)("SEA_COLOR")
+- ("SKY_COLOR") is not ("red")
+- ("SKY_COLOR") is not (setting)("GROUND_COLOR")
+- ("SKY_COLOR") in ("blueish")
+- ("SKY_COLOR") contains ("blu")
+- ("PLANET_AGE") greater than ("2000000")
+- ("PLANET_AGE") less than (setting)("SUN_AGE")
