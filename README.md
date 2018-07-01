@@ -11,12 +11,12 @@ Create some rules about Json objects, and then use the rules to validate a set o
 
 ## Using library "JsonEasyRules"
 	
-Example rules:
---------------
+#### Example rules:
+---
 	Rule: 		"if (sky) is (blue) then (planet) is (Earth)"
 
-Example world (Json objects):
-----------------------------
+#### Example world (Json objects):
+---
 	Config1:	{ "planet": "Earth", "sky": "blue" }
 	Config2:	{ "planet": "Mars",  "sky": "blue" }
 
