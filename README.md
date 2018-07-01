@@ -1,12 +1,12 @@
 # DymeRules
 
-## What is it: 
+#### What is it: 
 A collection of tools for inference and rule building.
 
-## Where or when should I use it? 
+#### Where or when should I use it? 
 Validate configuration files. Find hidden relationships between data.
 
-## How do I use it? 
+#### How do I use it? 
 Create some rules about Json objects, and then use the rules to validate a set of Json objects.
 
 ## Using library "JsonEasyRules"
