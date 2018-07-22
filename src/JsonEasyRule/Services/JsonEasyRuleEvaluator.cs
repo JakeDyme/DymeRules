@@ -1,10 +1,12 @@
 ﻿using DymeInferenceEngine.Services;
-using DymeInferenceEngine.Contracts;
 using EasyRuleDymeRule.Services;
+using DymeRuleEngine.Contracts;
 using DymeRuleEngine.Services;
 using JsonDymeWorld.Services;
 using System.Collections.Generic;
 using System.Linq;
+using System;
+using JsonEasyRule.Contracts;
 
 namespace JsonToEasyRules.Services
 {
@@ -28,12 +30,17 @@ namespace JsonToEasyRules.Services
             _ruleEvaluatorSvc = new DymeRuleEvaluator();
         }
 
-        public IEnumerable<string> InferEasyRules(IEnumerable<string> jsonObjects)
+        public IEnumerable<string> InferEasyRules(IEnumerable<string> jsonObjects, InferenceType inferenceType = InferenceType.Pessimistic)
         {
-            var dymeWorlds = jsonObjects.Select(w => _jsonDymeWorldSvc.ConvertJsonToDymeWorld(w));
-            var dymeRules = _inferenceEngineSvc.GetRulesPessimisticallyFromWorlds(dymeWorlds);
-            var easyRules = dymeRules.Select(r => _easyRuleDymeRuleSvc.ConvertDymeRuleToEasyRule(r)).ToList();
+            var dymeWorlds = ConvertJsonStringsToDymeWorlds(jsonObjects);
+            var dymeRules = GetRulesFromWorlds(dymeWorlds, inferenceType);
+            var easyRules = ConvertDymeRulesToEasyRules(dymeRules);
             return easyRules;
+        }
+
+        private IEnumerable<Dictionary<string, string>> ConvertJsonStringsToDymeWorlds(IEnumerable<string> jsonObjects)
+        {
+            return jsonObjects.Select(w => _jsonDymeWorldSvc.ConvertJsonToDymeWorld(w));
         }
 
         public IEnumerable<string> GetFailingRules(string jsonObject, IEnumerable<string> easyRules)
@@ -52,6 +59,21 @@ namespace JsonToEasyRules.Services
             var failingDymeWorlds = dymeWorlds.Where(w => !_ruleEvaluatorSvc.IsTrueIn(dymeRule, w.dyme)).ToList();
             var failingJsonWorlds = failingDymeWorlds.Select(w => w.json).ToList();
             return failingJsonWorlds;
+        }
+
+        private IEnumerable<IEvaluatable> GetRulesFromWorlds(IEnumerable<Dictionary<string, string>> dymeWorlds, InferenceType inferenceType)
+        {
+            switch (inferenceType)
+            {
+                case InferenceType.Pessimistic:
+                    return _inferenceEngineSvc.GetRulesPessimisticallyFromWorlds(dymeWorlds);
+            }
+            throw new Exception("Invalid inference type");
+        }
+
+        private IEnumerable<string> ConvertDymeRulesToEasyRules(IEnumerable<IEvaluatable> dymeRules)
+        {
+            return dymeRules.Select(r => _easyRuleDymeRuleSvc.ConvertDymeRuleToEasyRule(r)).ToList();
         }
 
     }

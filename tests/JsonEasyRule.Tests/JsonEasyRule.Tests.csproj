@@ -52,6 +52,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\DymeInferenceEngine\DymeInferenceEngine.csproj">
+      <Project>{1E70ECCA-8E28-464A-A109-092618B7BAF2}</Project>
+      <Name>DymeInferenceEngine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\JsonEasyRule\JsonEasyRule.csproj">
       <Project>{693cb165-c637-4a98-a617-41d8c1866405}</Project>
       <Name>JsonEasyRule</Name>
