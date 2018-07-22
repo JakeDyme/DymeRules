@@ -104,24 +104,24 @@ This one is fairly pessimistic. The following steps are used to infer the rules 
 #### An example of how this works:
 ----------------------------------
 We have the following worlds:
-1. {LOCATION:Home,  SHIRT:t-shirt, SHOES:open,   HAT: none }
-2. {LOCATION:Work,  SHIRT:button,  SHOES:closed, HAT: none }
-3. {LOCATION:Mall,  SHIRT:button,  SHOES:closed, HAT: none }
-4. {LOCATION:Shop,  SHIRT:t-shirt, SHOES:open,   HAT: none }
-5. {LOCATION:Home,  SHIRT:button,  SHOES:closed, HAT: none }
-6. {LOCATION:Shop, SHIRT:t-shirt, SHOES:open,   HAT: none }
+- world-1 {LOCATION:Home,  SHIRT:t-shirt, SHOES:open,   HAT: none }
+- world-2 {LOCATION:Work,  SHIRT:button,  SHOES:closed, HAT: none }
+- world-3 {LOCATION:Mall,  SHIRT:button,  SHOES:closed, HAT: none }
+- world-4 {LOCATION:Shop,  SHIRT:t-shirt, SHOES:open,   HAT: none }
+- world-5 {LOCATION:Home,  SHIRT:button,  SHOES:closed, HAT: none }
+- world-6 {LOCATION:Shop, SHIRT:t-shirt, SHOES:open,   HAT: none }
 
 1. Get the distinct list of facts from all worlds (a "fact" is a combination of an attribute and its value)
-LOCATION:Home
-LOCATION:Work
-LOCATION:Ball
-LOCATION:Shop
-LOCATION:Beach
-SHIRT:t-shirt
-SHIRT:button
-SHOES:open
-SHOES:closed
-HAT:none
+- LOCATION:Home
+- LOCATION:Work
+- LOCATION:Ball
+- LOCATION:Shop
+- LOCATION:Beach
+- SHIRT:t-shirt
+- SHIRT:button
+- SHOES:open
+- SHOES:closed
+- HAT:none
 
 2. Exclude facts that are the same in every world. 
 We remove constants. They don't give us any clues about the state of the world since they are always the same. In this list "HAT:none" was a constant fact.
