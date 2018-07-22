@@ -30,17 +30,17 @@ namespace DymeRuleEngine.Models
                 && inputObject.Consequent.Equals(Consequent);
         }
 
-        public bool Evaluate(Dictionary<string, string> stateOfTheWorld)
-        {
-            if (NotApplicapable(stateOfTheWorld))
-                return true;
-            return Consequent.Evaluate(stateOfTheWorld);
-        }
+        //public bool Evaluate(Dictionary<string, string> world)
+        //{
+        //    if (NotApplicable(world))
+        //        return true;
+        //    return Consequent.Evaluate(world);
+        //}
 
-        private bool NotApplicapable(Dictionary<string, string> stateOfTheWorld)
-        {
-            return Antecedent.Evaluate(stateOfTheWorld) == false;
-        }
+        //private bool NotApplicable(Dictionary<string, string> world)
+        //{
+        //    return Antecedent.Evaluate(world) == false;
+        //}
 
         public override string ToString()
         {
@@ -60,6 +60,11 @@ namespace DymeRuleEngine.Models
         public string ToFormattedString(Func<IEvaluatable, string> formatFunction)
         {
             return formatFunction(this);
+        }
+
+        public override int GetHashCode()
+        {
+            return (nameof(Implication) + ":" + ToString()).GetHashCode();
         }
 
     }

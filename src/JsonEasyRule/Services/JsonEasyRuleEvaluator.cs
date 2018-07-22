@@ -40,7 +40,7 @@ namespace JsonToEasyRules.Services
         {
             var dymeWorld = _jsonDymeWorldSvc.ConvertJsonToDymeWorld(jsonObject);
             var dymeRules = easyRules.Select(r => _easyRuleDymeRuleSvc.ConvertEasyRuleToDymeRule(r)).ToList();
-            var failingDymeRules = dymeRules.Where(r => !_ruleEvaluatorSvc.ValidateRuleAgainstWorld(r, dymeWorld)).ToList();
+            var failingDymeRules = dymeRules.Where(r => !_ruleEvaluatorSvc.IsTrueIn(r, dymeWorld)).ToList();
             var failingEasyRules = failingDymeRules.Select(r => _easyRuleDymeRuleSvc.ConvertDymeRuleToEasyRule(r)).ToList();
             return failingEasyRules;
         }
@@ -49,7 +49,7 @@ namespace JsonToEasyRules.Services
         {
             var dymeWorlds = jsonObjects.Select(w=>new { json = w, dyme = _jsonDymeWorldSvc.ConvertJsonToDymeWorld(w) }).ToList();
             var dymeRule = _easyRuleDymeRuleSvc.ConvertEasyRuleToDymeRule(easyRule);
-            var failingDymeWorlds = dymeWorlds.Where(w => !_ruleEvaluatorSvc.ValidateRuleAgainstWorld(dymeRule, w.dyme)).ToList();
+            var failingDymeWorlds = dymeWorlds.Where(w => !_ruleEvaluatorSvc.IsTrueIn(dymeRule, w.dyme)).ToList();
             var failingJsonWorlds = failingDymeWorlds.Select(w => w.json).ToList();
             return failingJsonWorlds;
         }

@@ -1,5 +1,6 @@
 ﻿using DymeRuleEngine.Contracts;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -31,39 +32,39 @@ namespace DymeRuleEngine.Models
 
 
 
-        public bool Evaluate(Dictionary<string, string> world)
-        {
-            //if (!AttributeExistsInWorld(world, Key)) return true;
-            var expectedValue = GetValueFromWorld(world, AttributeName);
-            string actualValue = BinaryArgument ? GetValueFromWorld(world, AttributeValue) : AttributeValue;
+        //public bool Evaluate(Dictionary<string, string> world)
+        //{
+        //    //if (!AttributeExistsInWorld(world, Key)) return true;
+        //    var expectedValue = GetValueFromWorld(world, AttributeName);
+        //    string actualValue = BinaryArgument ? GetValueFromWorld(world, AttributeValue) : AttributeValue;
 
-            //_metricsService.IncrementMetric("Rule.Fact.Evaluate", String.Concat("world", AttributeName));
-            if (Operator == Predicate.IS)
-                return (expectedValue == actualValue);
-            if (Operator == Predicate.NOT)
-                return (expectedValue != actualValue);
-            if (Operator == Predicate.GREATER_THAN)
-                return (Convert.ToDouble(expectedValue) > Convert.ToDouble(actualValue));
-            if (Operator == Predicate.LESS_THAN)
-                return (Convert.ToDouble(expectedValue) < Convert.ToDouble(actualValue));
-            if (Operator == Predicate.CONTAINS)
-                return (expectedValue.IndexOf(actualValue) > -1);
-            if (Operator == Predicate.IN)
-                return (actualValue.IndexOf(expectedValue) > -1);
-            throw new Exception("Unexpected relational operator");
-        }
+        //    //_metricsService.IncrementMetric("Rule.Fact.Evaluate", String.Concat("world", AttributeName));
+        //    if (Operator == Predicate.IS)
+        //        return (expectedValue == actualValue);
+        //    if (Operator == Predicate.NOT)
+        //        return (expectedValue != actualValue);
+        //    if (Operator == Predicate.GREATER_THAN)
+        //        return (Convert.ToDouble(expectedValue) > Convert.ToDouble(actualValue));
+        //    if (Operator == Predicate.LESS_THAN)
+        //        return (Convert.ToDouble(expectedValue) < Convert.ToDouble(actualValue));
+        //    if (Operator == Predicate.CONTAINS)
+        //        return (expectedValue.IndexOf(actualValue) > -1);
+        //    if (Operator == Predicate.IN)
+        //        return (actualValue.IndexOf(expectedValue) > -1);
+        //    throw new Exception("Unexpected relational operator");
+        //}
 
-        private bool AttributeExistsInWorld(Dictionary<string, string> world, string attributeName)
-        {
-            //_metricsService.IncrementMetric("Rule.Fact.WorldLookup", attributeName);
-            return world.ContainsKey(attributeName);
-        }
+        //private bool AttributeExistsInWorld(Dictionary<string, string> world, string attributeName)
+        //{
+        //    //_metricsService.IncrementMetric("Rule.Fact.WorldLookup", attributeName);
+        //    return world.ContainsKey(attributeName);
+        //}
 
-        private string GetValueFromWorld(Dictionary<string, string> world, string attributeName)
-        {
-            //_metricsService.IncrementMetric("Rule.Fact.WorldLookup", attributeName);
-            return world[attributeName];
-        }
+        //private string GetValueFromWorld(Dictionary<string, string> world, string attributeName)
+        //{
+        //    //_metricsService.IncrementMetric("Rule.Fact.WorldLookup", attributeName);
+        //    return world[attributeName];
+        //}
 
         public override bool Equals(object obj)
         {
@@ -73,6 +74,7 @@ namespace DymeRuleEngine.Models
                 && inputObject.AttributeValue.Equals(AttributeValue)
                 && inputObject.BinaryArgument.Equals(BinaryArgument);
         }
+
         public override string ToString()
         {
             return $"{AttributeName} {Operator} {AttributeValue}";
@@ -88,5 +90,11 @@ namespace DymeRuleEngine.Models
         {
             return formatFunction(this);
         }
+
+        public override int GetHashCode()
+        {
+            return (nameof(Proposition) + ":" + ToString()).GetHashCode();
+        }
     }
+
 }

@@ -328,5 +328,9 @@ ASALocalRun/
 # MFractors (Xamarin productivity tool) working folder
 .mfractor/
 
-#DeployFiles
+# --------------------------------------------------------
+#Deploy files
 Deploy/
+
+# Output libs
+**/dotnet45/*

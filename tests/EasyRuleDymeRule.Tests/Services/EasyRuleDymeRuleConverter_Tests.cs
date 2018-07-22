@@ -40,7 +40,7 @@ namespace EasyRuleToDymeRules.Tests
             var sut = new EasyRuleDymeRuleConverter();
             var expectEasyRule = "IF (Age) IS (18) AND (Name) IS (Bob) THEN (Movie) IS (Visible)";
             var inputDymeRule = If
-                .When(All.Of(ItsAFact.That("Age").Is("18")).And(ItsAFact.That("Name").Is("Bob")).AreTrue())
+                .When(All.Of(ItsAFact.That("Age").Is("18")).And(ItsAFact.That("Name").Is("Bob")).IsTrue())
                 .Then(ItsAFact.That("Movie").Is("Visible"));
             // Act...
             var result = sut.ConvertDymeRuleToEasyRule(inputDymeRule);
@@ -79,7 +79,7 @@ namespace EasyRuleToDymeRules.Tests
                     (ItsAFact.That("movie").Is("visible"))
                     .And
                     (ItsAFact.That("there").Is("boobs"))
-                    .AreTrue());
+                    .IsTrue());
             // Act...
             var result = sut.ConvertDymeRuleToEasyRule(inputDymeRule);
             Assert.AreEqual(expectEasyRule, result);

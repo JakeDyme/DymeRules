@@ -41,10 +41,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Contracts\Enums.cs" />
+    <Compile Include="Services\AttributesHelper.cs" />
     <Compile Include="Services\DymeInferenceEvaluator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\ImplicationHelper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DymeFluentAdapter\DymeFluentAdapter.csproj">
+      <Project>{37e4828f-0475-41e7-ada3-154e25be068e}</Project>
+      <Name>DymeFluentAdapter</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DymeRuleEngine\DymeRuleEngine.csproj">
       <Project>{D8F3E2DA-4731-4165-BA14-1A965DD52739}</Project>
       <Name>DymeRuleEngine</Name>

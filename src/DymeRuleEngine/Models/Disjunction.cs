@@ -7,23 +7,25 @@ using System.Linq;
 namespace DymeRuleEngine.Models
 {
     [DebuggerDisplay("{ToString()}")]
-    public class Disjunction : IEvaluatable
+    public class Disjunction : IEvaluatable, IJunction
     {
         public IEnumerable<IEvaluatable> Arguments { get; set; }
-        public Disjunction() { }
+        public Disjunction() {
+            Arguments = new List<IEvaluatable>();
+        }
         public Disjunction(IEnumerable<IEvaluatable> arguments)
         {
             Arguments = arguments;
         }
-        public bool Evaluate(Dictionary<string, string> stateOfTheWorld)
-        {
-            return Arguments.Any(a => FoundAWinner(a.Evaluate(stateOfTheWorld)));
-        }
+        //public bool Evaluate(Dictionary<string, string> stateOfTheWorld)
+        //{
+        //    return Arguments.Any(a => FoundAWinner(a.Evaluate(stateOfTheWorld)));
+        //}
 
-        private bool FoundAWinner(bool result)
-        {
-            return result == true;
-        }
+        //private bool FoundAWinner(bool result)
+        //{
+        //    return result == true;
+        //}
 
 
         public override bool Equals(object obj)
@@ -39,7 +41,9 @@ namespace DymeRuleEngine.Models
 
         public override string ToString()
         {
-            return Arguments.Select(x => x.ToString()).Aggregate((a, b) => a + $" OR " + b);
+            return Arguments
+                .Select(x => x.ToString())
+                .Aggregate((a, b) => a + $" OR " + b);
         }
 
         public string ToFormattedString(Func<IEvaluatable, string> formatFunction)
@@ -75,6 +79,17 @@ namespace DymeRuleEngine.Models
             }
             return false;
         }
+
+        public override int GetHashCode()
+        {
+            return (nameof(Disjunction) + ":" + 
+                Arguments
+                .Select(x => x.GetHashCode().ToString())
+                .OrderBy(x => x)
+                .Aggregate((a, b) => a + "," + b))
+                .GetHashCode();
+        }
+
 
     }
 }

@@ -45,6 +45,7 @@
     <Compile Include="Models\Fact.cs" />
     <Compile Include="Models\Imply.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\JunctionHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DymeRuleEngine\DymeRuleEngine.csproj">

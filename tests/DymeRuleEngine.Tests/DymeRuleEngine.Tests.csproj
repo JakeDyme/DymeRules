@@ -52,6 +52,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\DymeFluentAdapter\DymeFluentAdapter.csproj">
+      <Project>{37E4828F-0475-41E7-ADA3-154E25BE068E}</Project>
+      <Name>DymeFluentAdapter</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\DymeRuleEngine\DymeRuleEngine.csproj">
       <Project>{d8f3e2da-4731-4165-ba14-1a965dd52739}</Project>
       <Name>DymeRuleEngine</Name>

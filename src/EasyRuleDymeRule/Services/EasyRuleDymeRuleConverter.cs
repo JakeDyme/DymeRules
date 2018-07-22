@@ -160,6 +160,7 @@ namespace EasyRuleDymeRule.Services
             {
                 arguments.Add(GetEvaluatable(match.Groups[3].Value));
             }
+            arguments = distributeArguments<Conjunction>(arguments).ToList();
             return new Conjunction(arguments);
         }
 
@@ -173,9 +174,18 @@ namespace EasyRuleDymeRule.Services
             {
                 arguments.Add(GetEvaluatable(match.Groups[3].Value));
             }
+            arguments = distributeArguments<Disjunction>(arguments).ToList();
             return new Disjunction(arguments);
         }
 
+        private IEnumerable<IEvaluatable> distributeArguments<T>(IEnumerable<IEvaluatable> arguments)
+        {
+            var nonJunctionArguments = arguments.Where(a => !a.GetType().IsAssignableFrom(typeof(T)));
+            var junctionArguments = arguments.Where(a => a.GetType().IsAssignableFrom(typeof(T)));
+            return junctionArguments
+                .SelectMany(a => (a as IJunction).Arguments)
+                .Union(nonJunctionArguments);
+        }
 
         private IEvaluatable GetTerm(string inputString)
         {

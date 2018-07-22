@@ -47,12 +47,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\Fact.cs" />
+    <Compile Include="Contracts\IEvaluator.cs" />
+    <Compile Include="Contracts\IImplication.cs" />
+    <Compile Include="Contracts\IJunction.cs" />
+    <Compile Include="Models\Proposition.cs" />
     <Compile Include="Models\Conjunction.cs" />
     <Compile Include="Models\Implication.cs" />
     <Compile Include="Models\Disjunction.cs" />
     <Compile Include="Contracts\Enums.cs" />
     <Compile Include="Contracts\IEvaluatable.cs" />
+    <Compile Include="Services\DymeRuleSetEvaluator.cs" />
     <Compile Include="Services\DymeRuleEvaluator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

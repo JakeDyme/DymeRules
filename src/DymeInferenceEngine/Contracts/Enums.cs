@@ -14,4 +14,11 @@ namespace DymeInferenceEngine.Contracts
         WorldDeltas,
         WorldMatching
     }
+
+    public enum Optimism
+    {
+        Optimistic,
+        Pessimistic,
+        Realistic
+    }
 }

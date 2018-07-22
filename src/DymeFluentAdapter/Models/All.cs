@@ -1,6 +1,8 @@
 ﻿using DymeRuleEngine.Models;
 using DymeRuleEngine.Contracts;
 using System.Linq;
+using System.Collections.Generic;
+using DymeFluentAdapter.Services;
 
 namespace DymeFluentSyntax.Models
 {
@@ -12,28 +14,26 @@ namespace DymeFluentSyntax.Models
             _state = state;
         }
 
-        private IEvaluatable AsEvaluatable()
-        {
-            return _state;
-        }
-
         public static All Of(IEvaluatable argument)
         {
-            var newScenario = new Conjunction();
-            newScenario.Arguments = new[] { argument };
-            var all = new All(newScenario);
-            return all;
+            var newJunction = new Conjunction();
+            JunctionHelper.AddArgumentToJunction<Conjunction>(newJunction, argument);
+            return new All(newJunction);
         }
 
         public All And(IEvaluatable argument)
         {
-            _state.Arguments = _state.Arguments.Concat(new[] { argument });
+            JunctionHelper.AddArgumentToJunction<Conjunction>(_state, argument);
             return this;
         }
-
-        public IEvaluatable AreTrue()
+        public IEvaluatable IsTrue()
         {
             return AsEvaluatable();
+        }
+
+        private IEvaluatable AsEvaluatable()
+        {
+            return _state;
         }
 
     }

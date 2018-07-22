@@ -1,6 +1,7 @@
 ﻿using DymeInferenceEngine.Contracts;
 using DymeRuleEngine.Services;
 using DymeRuleEngine.Models;
+using DymeFluentSyntax.Models;
 using DymeRuleEngine.Contracts;
 using System;
 using System.Collections.Generic;
@@ -12,18 +13,24 @@ namespace DymeInferenceEngine.Services
 
     public class DymeInferenceEvaluator
     {
-        private DymeRuleEvaluator _ruleEngineSvc = new DymeRuleEvaluator();
+        private DymeRuleEvaluator _ruleEngineSvc;
+        private DymeRuleSetEvaluator _setEvaluator;
+
+        public DymeInferenceEvaluator()
+        {
+            _ruleEngineSvc = new DymeRuleEvaluator();
+            _setEvaluator = new DymeRuleSetEvaluator(_ruleEngineSvc);
+        }
 
         public IEnumerable<IEvaluatable> GetRulesForWorlds(IEnumerable<Dictionary<string, string>> worlds, PickAttriubutesBy methodType)
         {
-            //var dymeWorlds = ParseWorlds(worlds);
             var relevantAttributes = GetRelevantAttributes(worlds, methodType);
 
             var allRules = new List<IEvaluatable>();
             var invalidRules = new List<IEvaluatable>();
             foreach (var dymeWorld in worlds)
             {
-                var newRules = CreateCartesianImplicationsFromWorld(relevantAttributes, dymeWorld);
+                var newRules = GetCartesianImplicationsFromWorld(relevantAttributes, dymeWorld);
                 invalidRules.AddRange(GetInvalidRules(worlds, newRules));
                 newRules = newRules.Where(newRule => !allRules.Contains(newRule)).ToList();
                 allRules.AddRange(newRules.Except(invalidRules));
@@ -51,26 +58,6 @@ namespace DymeInferenceEngine.Services
             throw new ArgumentOutOfRangeException();
         }
 
-        //public IEnumerable<IEvaluatable> UpdateRulesWithWorldAndReturnNewRules(string inputWorld)
-        //{
-        //    // Consolidate worlds...
-        //    var allWorlds = new List<Dictionary<string, string>>();
-        //    var newWorld = ParseWorld(inputWorld);
-        //    allWorlds.Add(newWorld);
-        //    allWorlds.AddRange(GetPreviousWorldsFromDb());
-
-        //    // Consolidate rules...
-        //    var rules = new List<IEvaluatable>();
-        //    rules.AddRange(GetExistingRulesFromDb());
-        //    rules.AddRange(CreateNewRulesFromWorld(newWorld));
-
-        //    // Validate consolidated rules against consolidated worlds
-        //    rules = ValidateRulesAgainstAllWorlds(allWorlds, rules);
-        //    UpdateRulesDatabase(rules);
-        //    UpdateWorldsDatabase(inputWorld);
-        //    return rules;
-        //}
-
         private IEnumerable<IEvaluatable> GetInvalidRules(IEnumerable<Dictionary<string, string>> worlds, IEnumerable<IEvaluatable> rules)
         {
             var invalidRules = new List<IEvaluatable>();
@@ -85,22 +72,6 @@ namespace DymeInferenceEngine.Services
             }
             return invalidRules;
         }
-
-        //private List<IEvaluatable> ValidateRulesAgainstAllWorlds(IEnumerable<Dictionary<string, string>> worlds, List<IEvaluatable> rules)
-        //{
-        //    var validRules = new List<IEvaluatable>();
-        //    var purgeList = new List<IEvaluatable>();
-        //    var index = -1;
-        //    while (++index < rules.Count())
-        //    {
-        //        var rule = rules[index];
-        //        if (RuleIsValidInAllWorlds(worlds, rule))
-        //            validRules.Add(rule);
-        //        else
-        //            rules = RemoveRulesWithEquivalentRelationships(rules, rule);
-        //    }
-        //    return validRules;
-        //}
 
         private List<IEvaluatable> RemoveRulesWithEquivalentRelationships(IEnumerable<IEvaluatable> ruleSet, IEvaluatable ruleWithRelation)
         {
@@ -117,36 +88,11 @@ namespace DymeInferenceEngine.Services
         {
             foreach (var world in worlds)
             {
-                if (!_ruleEngineSvc.ValidateRuleAgainstWorld(rule, world))
+                if (!_ruleEngineSvc.IsTrueIn(rule, world))
                     return false;
             }
             return true;
         }
-
-        //private IEnumerable<IEvaluatable> GetExistingRulesFromDb()
-        //{
-        //    return _rulesDatabase;
-        //}
-
-        //private void UpdateWorldsDatabase(string inputWorld)
-        //{
-        //    _worldsDatabase.Add(inputWorld);
-        //}
-
-        //private void UpdateRulesDatabase(IEnumerable<IEvaluatable> newValidRules)
-        //{
-        //    _rulesDatabase = newValidRules;
-        //}
-
-        //private List<Dictionary<string, string>> GetPreviousWorldsFromDb()
-        //{
-        //    var dymeWorlds = new List<Dictionary<string, string>>();
-        //    foreach (var jsonWorld in _worldsDatabase)
-        //    {
-        //        dymeWorlds.Add(_jsonParserSvc.ParseJson(jsonWorld));
-        //    }
-        //    return dymeWorlds;
-        //}
 
         private static List<IEvaluatable> GetValidatedRulesForWorld(IEnumerable<IEvaluatable> newRules, Dictionary<string, string> world)
         {
@@ -154,63 +100,22 @@ namespace DymeInferenceEngine.Services
             var validRules = new List<IEvaluatable>();
             foreach (var rule in newRules)
             {
-                if (ruleEngine.ValidateRuleAgainstWorld(rule, world))
+                if (ruleEngine.IsTrueIn(rule, world))
                     validRules.Add(rule);
             }
             return validRules;
         }
 
-        //public IEnumerable<IEvaluatable> CreateRulesFromCompare(Dictionary<string, string> world1, Dictionary<string, string> world2)
-        //{
-        //    var evaluatables = new List<IEvaluatable>();
-        //    var allAttributeNames = GetDistinctAttributeNames(world1);
-        //    var allAttributes = new Dictionary<string, Attribute>();
-        //    foreach (var attName in allAttributeNames)
-        //    {
-        //        Attribute attributeDetails = GetSetAttribute(attName);
-        //        UpdateAttributeMetrics(attributeDetails, world1);
-        //        allAttributes.Add(attName, attributeDetails);
-        //    }
-        //    //ValidateAttributes()
-        //    //IsValueAnError()
-        //    // Determining if discrete value is an error or if its a new value
-        //    // - check if there are other values in the discrete set for which there are only one occurrance. +
-        //    // - check other variables plus rules to see if there should possibly be another value here. -
-        //    // - check if there is possibly a spelling mistake using Levenshtein distance.
-        //    var commonAttributeNames = GetCommonAttributes(world1, world2);
-        //    var dissimilarAttNames = GetDissimilarAttributes(commonAttributeNames, world1, world2);
-        //    var similarAttNames = GetSimilarAttributes(commonAttributeNames, world1, world2);
-        //    /// For Each world...
-        //    ///   IF sunny THEN hot,
-        //    ///   IF hot THEN sunny, 
-        //    ///   IF windy THEN hot, 
-        //    ///   IF hot THEN windy, 
-        //    ///   IF sunny THEN windy, 
-        //    ///   IF windy then sunny
-        //    var newRules = new List<Imply>();
-        //    newRules.AddRange(CreateCartesianImplicationsFromWorld(dissimilarAttNames, world1));
-        //    newRules.AddRange(CreateCartesianImplicationsFromWorld(dissimilarAttNames, world2));
-        //    /// For each world...
-        //    ///  IF sunny OR hot OR windy THEN sunny AND hot AND windy
-        //    //rules.Add(CreateFullyInclusiveImplicationFromWorld(dissimilarAttNames, world1));
-        //    //rules.Add(CreateFullyInclusiveImplicationFromWorld(dissimilarAttNames, world2));
-        //    evaluatables.AddRange(newRules);
-        //    return evaluatables;
-        //}
-
         private IEnumerable<IEvaluatable> CreateNewRulesFromWorld(Dictionary<string, string> world, IEnumerable<string> attributeNames, BuildRulesFromAttributesUsing methodType)
         {
-            //var commonAttributeNames = GetCommonAttributes(world1, world2);
-            //var dissimilarAttNames = GetDissimilarAttributes(commonAttributeNames, world1, world2);
-            //    var similarAttNames = GetSimilarAttributes(commonAttributeNames, world1, world2);
             switch (methodType)
             {
                 case BuildRulesFromAttributesUsing.CartesianImplication:
-                    return CreateCartesianImplicationsFromWorld(attributeNames, world);
+                    return GetCartesianImplicationsFromWorld(attributeNames, world);
                 case BuildRulesFromAttributesUsing.ByWorldDeltas:
-                    return CreateCartesianImplicationsFromWorld(attributeNames, world);
+                    return GetCartesianImplicationsFromWorld(attributeNames, world);
                 default:
-                    return CreateCartesianImplicationsFromWorld(attributeNames, world);
+                    return GetCartesianImplicationsFromWorld(attributeNames, world);
             }
         }
 
@@ -260,7 +165,7 @@ namespace DymeInferenceEngine.Services
             return facts;
         }
 
-        private IEnumerable<Implication> CreateCartesianImplicationsFromWorld(IEnumerable<string> attNames, Dictionary<string, string> world)
+        private IEnumerable<Implication> GetCartesianImplicationsFromWorld(IEnumerable<string> attNames, Dictionary<string, string> world)
         {
             var implications = new List<Implication>();
             var attributePairs = CreateAttributeCombinations(attNames);
@@ -314,6 +219,11 @@ namespace DymeInferenceEngine.Services
             return worlds.SelectMany(w => w.Select(att=> att.Key)).Distinct().ToList();
         }
 
+        private IEnumerable<string> GetAllAttributes(Dictionary<string, string> world)
+        {
+            return world.Select(att => att.Key).Distinct().ToList();
+        }
+
         private IEnumerable<string> GetAttributesBaseOnSimilarity(IEnumerable<Dictionary<string, string>> worlds, bool areSimilar)
         {
             var worldPairs = CreateWorldPairs(worlds);
@@ -321,19 +231,12 @@ namespace DymeInferenceEngine.Services
             var relevantAttributes = worldPairs.SelectMany(worldPair => (areSimilar)
                 ? GetSimilarAttributes(commonAttributes, worldPair.Item1, worldPair.Item2) 
                 : GetDissimilarAttributes(commonAttributes, worldPair.Item1, worldPair.Item2));
-            //relevantAttributes = ExcludeConstantAttributes(relevantAttributes, worlds);
-            //relevantAttributes = ExcludeRandomAttributes(relevantAttributes, worlds);
             var attributeCombinations = CreateAttributeCombinations(relevantAttributes);
             var validatedAttributePairs = attributeCombinations.Where(attPair => AttributesRelationAreConsistentAcrossWorldPairs(worldPairs, attPair)).ToList();
             
             var results = validatedAttributePairs.SelectMany(a => new List<string>() { a.Item1, a.Item2 }).Distinct();
             return results;
         }
-
-        //private IEnumerable<string> ExcludeConstantAttributes(IEnumerable<string> relevantAttributes, IEnumerable<Dictionary<string, string>> worlds)
-        //{
-        //    return relevantAttributes.Where(
-        //}
 
         private bool AttributesRelationAreConsistentAcrossWorldPairs(IEnumerable<Tuple<Dictionary<string, string>, Dictionary<string, string>>> worldPairs, Tuple<string,string> attributeCombinations)
         {
@@ -348,102 +251,104 @@ namespace DymeInferenceEngine.Services
             return true;
         }
 
-        #region ATTRIBUTES
-        private List<Attribute> _attributeDatabase = new List<Attribute>();
+        #region Pessimistic worlds
 
-        public class Attribute
+        public IEnumerable<IEvaluatable> GetRulesPessimisticallyFromWorlds(IEnumerable<Dictionary<string,string>> worlds)
         {
-            public string Name { get; set; }
-            public int OccurrenceCount { get; set; }
-            public ICollection<Option> DiscreteOptions { get; set; }
+            var allDistinctFactsFromAllWorlds = AllAttributesAsDistinctListOfFact(worlds);
+
+            var nonConstantFacts = AllFactsThatAreNotConstantInAllWorlds(worlds, allDistinctFactsFromAllWorlds);
+
+            var repeatedFacts = AllFactsThatRepeatInMoreThanOneWorld(worlds, nonConstantFacts);
+
+            var implications = AsSimpleImplicationsAllFactsThatRepeatWhenAnotherFactsRepeats(worlds, repeatedFacts);
+
+            return implications;
         }
 
-        public enum AttributeContinuity { increasing, decreasing }
-        public enum AttributeDataType { number, text, boolean }
-
-
-        public class AttributeProperties
+        private IEnumerable<IEvaluatable> AsSimpleImplicationsAllFactsThatRepeatWhenAnotherFactsRepeats(IEnumerable<Dictionary<string, string>> worlds, IEnumerable<Proposition> facts)
         {
-            AttributeContinuity Continuity { get; set; }
-            AttributeDataType DataType { get; set; }
-            public double Max { get; set; }
-            public double Min { get; set; }
+            var repeatedFactsGroupedByWorldIndexes = facts
+                .Select(fact => new Tuple<Proposition, IEnumerable<int>>(fact, _setEvaluator.IsTrueInWorldsReturnWorldIndexes(fact, worlds)));
+
+            var implications = 
+                repeatedFactsGroupedByWorldIndexes
+                .SelectMany((fact1Worlds_tuple, x) => 
+                    repeatedFactsGroupedByWorldIndexes
+                    .Where((fact2Worlds_tuple, y) => 
+                        NotTheSameElementAs(y, x) 
+                        && RepeatsWhenRepeating(fact1Worlds_tuple.Item2, fact2Worlds_tuple.Item2))
+                    .Select(prop2Worlds => If.When(fact1Worlds_tuple.Item1).Then(prop2Worlds.Item1)));
+
+            return implications;
         }
 
-        public class AttributeProperty
+        public IEnumerable<IEvaluatable> AsConjunctionGetAllFactThatRepeatWhenOtherFactRepeat(IEnumerable<Dictionary<string, string>> worlds, IEnumerable<Proposition> facts)
         {
-            string PropertyName { get; set; }
-            int probability { get; set; }
+            var repeatedFactGroupedByWorldIndexes = facts
+                .Select(fact => new Tuple<Proposition, IEnumerable<int>>(fact, _setEvaluator.IsTrueInWorldsReturnWorldIndexes(fact, worlds)))
+                .Where(factWorlds => factWorlds.Item2.Count() > 1);
+
+            var WhenFactThenFacts_tuple =
+                repeatedFactGroupedByWorldIndexes
+                .Select((fact1Worlds, x) => new Tuple<Proposition, IEnumerable<Proposition>>(
+                    fact1Worlds.Item1,
+                    repeatedFactGroupedByWorldIndexes
+                        .Where((fact2Worlds, y) => NotTheSameElementAs(y, x) && RepeatsWhenRepeating(fact1Worlds.Item2, fact2Worlds.Item2))
+                        .Select(fact2Worlds => fact2Worlds.Item1)
+                        ))
+                .Where(propPropsTuple => propPropsTuple.Item2.Any());
+
+            var conjunction =
+                WhenFactThenFacts_tuple
+                .Select(propPropsTuple => 
+                    ImplicationHelper.ConvertArgumentsToJunction(propPropsTuple.Item2.Concat(new[] { propPropsTuple.Item1 }), Junction.AND))
+                .Distinct();
+
+            return conjunction;
         }
 
-        public class Option
+        private bool RepeatsWhenRepeating(IEnumerable<int> xFactWorldIndexes, IEnumerable<int> yFactWorldIndexes)
         {
-            public Option(string value)
-            {
-                Value = value;
-                OccurrenceCount = 0;
-            }
-            public string Value;
-            public int OccurrenceCount;
+            return IsSubsetOf(xFactWorldIndexes, yFactWorldIndexes);
         }
 
-
-        private void UpdateAttributeMetrics(Attribute attribute, Dictionary<string, string> world1)
+        private bool IsSupersetOf(IEnumerable<int> apparentSuperset, IEnumerable<int> apparentSubset)
         {
-            var attributeValueInWorld = world1[attribute.Name];
-            attribute.OccurrenceCount++;
-            var attributeOption = GetSetAttributeOption(attribute, attributeValueInWorld);
-            attributeOption.OccurrenceCount++;
+            return IsSubsetOf(apparentSubset, apparentSuperset);
         }
 
-        private Option GetSetAttributeOption(Attribute attribute, string attributeValueInWorld)
+        private bool IsSubsetOf(IEnumerable<int> apparentSubset, IEnumerable<int> apparentSuperset)
         {
-            var attributeOption = attribute.DiscreteOptions.SingleOrDefault(a => a.Value == attributeValueInWorld);
-            if (attributeOption == null)
-            {
-                attributeOption = new Option(attributeValueInWorld);
-                attribute.DiscreteOptions.Add(attributeOption);
-            }
-            return attributeOption;
+            return apparentSuperset.Intersect(apparentSubset).Count() == apparentSubset.Count();
         }
 
-        private Attribute GetSetAttribute(string attName)
+        private bool IsSameSetAs(IEnumerable<int> apparentSubset, IEnumerable<int> apparentSuperset)
         {
-            var attribute = GetAttributeFromDatabase(attName);
-            if (attribute == null)
-            {
-                attribute = CreateAttributeInDatabase(attName);
-            }
-            return attribute;
+            return apparentSuperset.Intersect(apparentSuperset).Count() == apparentSubset.Count() && apparentSubset.Count() == apparentSuperset.Count();
         }
 
-        private Attribute CreateAttributeInDatabase(string attName)
+        private bool NotTheSameElementAs(int index1, int index2)
         {
-            Attribute newAttribute = CreateAttribute();
-            _attributeDatabase.Add(newAttribute);
-            return newAttribute;
+            return index1 != index2;
+        }
+        private IEnumerable<Proposition> AllFactsThatAreNotConstantInAllWorlds(IEnumerable<Dictionary<string, string>> worlds, IEnumerable<Proposition> commonFact)
+        {
+            return commonFact.Where(p => _setEvaluator.IsNotTrueInAll(p, worlds));
+        }
+        private IEnumerable<Proposition> AllAttributesAsDistinctListOfFact(IEnumerable<Dictionary<string, string>> worlds)
+        {
+            return worlds.SelectMany(world => GetSimpleFactFromWorld(world)).Distinct();
+        }
+        private IEnumerable<Proposition> GetSimpleFactFromWorld(Dictionary<string, string> world)
+        {
+            return world.Select(att => new Proposition(att.Key, Predicate.IS, att.Value));
+        }
+        private IEnumerable<Proposition> AllFactsThatRepeatInMoreThanOneWorld(IEnumerable<Dictionary<string, string>> worlds, IEnumerable<Proposition> fact)
+        {
+            return fact.Where(proposition => _setEvaluator.IsTrueInAtLeastTwo(proposition, worlds));
         }
 
-        private static Attribute CreateAttribute()
-        {
-            return new Attribute();
-        }
-
-        private Attribute GetAttributeFromDatabase(string attName)
-        {
-            return _attributeDatabase.SingleOrDefault(a => a.Name == attName);
-        }
-
-
-
-        //private bool AttributeIsDiscrete(string attributeName, IEnumerable<Dictionary<string,string> allWorlds)
-        //{
-        //    var possibleValueCount = GetWorldCount(allWorlds);
-        //    var discreteValues = GetDiscreetValuesForAttribute(attName, allWorlds);
-        //    var discreteValuesCount = GetDiscreetValuesForAttribute(attName);
-        //    if (discreteValues.Count == possibleValueCount)
-        //        return true;
-        //}
-        #endregion
+        #endregion Pessimistic worlds
     }
 }
