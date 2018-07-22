@@ -32,32 +32,135 @@ Running the rule engine over your configs when you do a deployment allows you to
 ## Easy-Rule syntax
 The Easy-Rules syntax is meant to be as close to natural language as possible, making rules easy to read and write.
 
-Constructs
+###Constructs
 -----------
-- Implication: if ... then ...
-- Conjunction: ... and ...
-- Disjunction: ... or ...
-- Proposition: (...) is|not|greater than|less than|contains|in (...)
+- Implication: `if ... then ...`
+- Conjunction: `... and ...`
+- Disjunction: `... or ...`
+- Proposition: `(...) is|not|greater than|less than|contains|in (...)`
+
+#### Examples:
+- proposition: `(cat) is (grumpy)`
+- implication: `if (bowl) is (empty) then (cat) is (grumpy)`
+- conjunction: `(bowl) is (empty) and (cat) is (grumpy)`
+- disjunction: `(bowl) is (full) or (cat) is (grumpy)`
+##### Nested constructs
+- `if (bowl) is (empty) and (cat) is (grumpy) then (desk) is (toilet)`
+
+
 
 ### Proposition
 ---------------
-FORMATS:
-- unary comparison:  ([key]) operator ([value])
-- binary comparison: ([key1]) operator (setting)([key2])
 
-COMPARERS:
-- equality: is | must be
-- negation: not | is not
-- inequality: greater than | is greater than | less than | is less than
-- superset: contains
-- subset: in
+EXAMPLES OF EASY RULES:
+- `(SKY_COLOR) is (blue)`
+- `(SKY_COLOR) is (setting)(SEA_COLOR)`
+- `(SKY_COLOR) is not (red)`
+- `(SKY_COLOR) is not (setting)(GROUND_COLOR)`
+- `(SKY_COLOR) in (blueish)`
+- `(SKY_COLOR) contains (blu)`
+- `(PLANET_AGE) greater than (2000000)`
+- `(PLANET_AGE) less than (setting)(SUN_AGE)`
+#### Formats (comparing settings to values, or settings to other settings) :
+- unary comparison:  `([key])` `operator` `([value])`
+- binary comparison: ([key1]) operator `(setting)`([key2])
+#### Comparers:
+- equality: `is` | `must be`
+- negation: `not` | `is not`
+- inequality: `greater than` | `is greater than` | `less than` | `is less than`
+- superset: `contains`
+- subset: `in`
 
-EXAMPLES:
-- ("SKY_COLOR") is ("blue")
-- ("SKY_COLOR") is (setting)("SEA_COLOR")
-- ("SKY_COLOR") is not ("red")
-- ("SKY_COLOR") is not (setting)("GROUND_COLOR")
-- ("SKY_COLOR") in ("blueish")
-- ("SKY_COLOR") contains ("blu")
-- ("PLANET_AGE") greater than ("2000000")
-- ("PLANET_AGE") less than (setting)("SUN_AGE")
+### Implication
+----------------
+- `if (PLANET) is (Earth) then (sky) is (blue)`
+
+### Conjunction
+----------------
+- `(PLANET) is (Earth) and (sky) is (blue)`
+
+### Disjunction
+----------------
+- `(PLANET) is (Earth) or (sky) is (yellow)`
+
+## Inference:
+The "JsonEasyRules" library has some nice inference methods:
+
+- `InferEasyRules` pass in a set of worlds, and get back a set of rules.
+- `GetFailingRules` pass in a set of rules, and 1 world, and get back the rules that are failing in that world.
+- `GetFailingWorlds` pass in a set of worlds, and 1 rule, and get back the worlds that are failing for that rule.
+
+#### How does the inference work?
+There are many methods to infer rules from worlds. 
+This one is fairly pessimistic. The following steps are used to infer the rules for this inference type.
+
+1. Get the distinct list of facts from all worlds (a "fact" is a combination of an attribute and its value)
+2. Exclude facts that are the same in every world.
+3. Get all facts that repeat in more than one world.
+4. Get all facts that repeat in the same worlds.
+5. Convert into simple implications.
+
+---
+#### An example of how this works:
+----------------------------------
+We have the following worlds:
+1. {LOCATION:Home,  SHIRT:t-shirt, SHOES:open,   HAT: none }
+2. {LOCATION:Work,  SHIRT:button,  SHOES:closed, HAT: none }
+3. {LOCATION:Mall,  SHIRT:button,  SHOES:closed, HAT: none }
+4. {LOCATION:Shop,  SHIRT:t-shirt, SHOES:open,   HAT: none }
+5. {LOCATION:Home,  SHIRT:button,  SHOES:closed, HAT: none }
+6. {LOCATION:Shop, SHIRT:t-shirt, SHOES:open,   HAT: none }
+
+1. Get the distinct list of facts from all worlds (a "fact" is a combination of an attribute and its value)
+LOCATION:Home
+LOCATION:Work
+LOCATION:Ball
+LOCATION:Shop
+LOCATION:Beach
+SHIRT:t-shirt
+SHIRT:button
+SHOES:open
+SHOES:closed
+HAT:none
+
+2. Exclude facts that are the same in every world. 
+We remove constants. They don't give us any clues about the state of the world since they are always the same. In this list "HAT:none" was a constant fact.
+- LOCATION:Home
+- LOCATION:Work
+- LOCATION:Ball
+- LOCATION:Shop
+- LOCATION:Beach
+- SHIRT:t-shirt
+- SHIRT:button
+- SHOES:open
+- SHOES:closed
+
+3. Get all facts that repeat in more than one world.
+- LOCATION:Home 	{World:1, World:5}
+- LOCATION:Shop 	{World:4, World:6}
+- SHIRT:t-shirt 	{World:1, World:4, World:6}
+- SHIRT:button		{World:2, World:3, World:5}
+- SHOES:open		{World:1, World:4, World:6}
+- SHOES:closed		{World:2, World:3, World:5}
+
+4. Get all facts that repeat in the same worlds.
+- (LOCATION:Home) repeats in {World:1, World:5}
+- (SHOES:open)    repeats when (LOCATION:Shop) repeats in  {World:4, World:6}
+- (SHIRT:t-shirt) repeats when (SHOES:open)    repeats in  {World:1, World:4, World:6}
+- (SHOES:open)    repeats when (SHIRT:t-shirt) repeats in  {World:1, World:4, World:6}
+- (SHIRT:button)  repeats when (SHOES:closed)  repeats in {World:2, World:3, World:5}
+- (SHOES:closed)  repeats when (SHIRT:button)  repeats in {World:2, World:3, World:5}
+
+5. Convert into simple implications.
+Since there must be at least two facts to build an implication, (LOCATION:Home) falls away.
+It can be said that when (LOCATION) is (Shop) then (SHOES) are (open) since every time we're at the shop, our shoes are open
+this implies that our shoes are open BECAUSE we're at the shop. We can therefore build animplication from this.
+We do the same for all other repititions.
+The final ruleset emerges as:
+- if (LOCATION:Shop) then (SHOES:open)
+- if (SHIRT:t-shirt) then (SHOES:open)
+- if (SHOES:open) then (SHIRT:t-shirt)
+- if (SHIRT:button) then (SHOES:closed)
+- if (SHOES:closed) then (SHIRT:button)
+
+

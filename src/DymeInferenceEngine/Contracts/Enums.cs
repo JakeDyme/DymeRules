@@ -15,10 +15,4 @@ namespace DymeInferenceEngine.Contracts
         WorldMatching
     }
 
-    public enum Optimism
-    {
-        Optimistic,
-        Pessimistic,
-        Realistic
-    }
 }
