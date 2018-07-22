@@ -333,4 +333,4 @@ ASALocalRun/
 Deploy/
 
 # Output libs
-**/dotnet45/*
+lib/

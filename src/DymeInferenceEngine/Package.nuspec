@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>DymeInferenceEngine</id>
-    <version>1.0.2</version>
+    <version>2.0.0</version>
     <authors>Jake Dyme</authors>
     <owners>Jake Dyme</owners>
 	<licenseUrl>http://opensource.org/licenses/MS-PL</licenseUrl>
@@ -14,7 +14,7 @@
     <copyright>Copyright 2018</copyright>
     <tags>DymeRules EasyRule JsonParser</tags>
     <dependencies>
-		<dependency id="DymeRuleEngine" version="1.0.2" />
+		<dependency id="DymeRuleEngine" version="2.0.0" />
     </dependencies>
   </metadata>
 </package>

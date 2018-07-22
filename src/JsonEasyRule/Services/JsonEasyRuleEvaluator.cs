@@ -31,7 +31,7 @@ namespace JsonToEasyRules.Services
         public IEnumerable<string> InferEasyRules(IEnumerable<string> jsonObjects)
         {
             var dymeWorlds = jsonObjects.Select(w => _jsonDymeWorldSvc.ConvertJsonToDymeWorld(w));
-            var dymeRules = _inferenceEngineSvc.GetRulesForWorlds(dymeWorlds, PickAttriubutesBy.World);
+            var dymeRules = _inferenceEngineSvc.GetRulesPessimisticallyFromWorlds(dymeWorlds);
             var easyRules = dymeRules.Select(r => _easyRuleDymeRuleSvc.ConvertDymeRuleToEasyRule(r)).ToList();
             return easyRules;
         }

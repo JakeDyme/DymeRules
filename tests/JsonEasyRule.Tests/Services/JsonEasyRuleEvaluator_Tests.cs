@@ -17,9 +17,7 @@ namespace JsonEasyRulesTests
             jsonWorlds.Add("{'Name':'Sam', 'Age':'30', 'Year': '2030'}");
             jsonWorlds.Add("{'Name':'Tom', 'Age':'30', 'Year': '2010'}");
             var expectedRules = new List<string>();
-            expectedRules.Add("IF (Year) IS (2040) THEN (Age) IS (40)");
             expectedRules.Add("IF (Year) IS (2030) THEN (Age) IS (30)");
-            expectedRules.Add("IF (Year) IS (2010) THEN (Age) IS (30)");
 
             var sut = JsonEasyRuleEvaluator.CreateEvaluator();
             // Act...
