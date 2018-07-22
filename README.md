@@ -154,9 +154,9 @@ We remove constants. They don't give us any clues about the state of the world s
 5. Convert into simple implications.
 Since there must be at least two facts to build an implication, (LOCATION:Home) falls away.
 It can be said that when (LOCATION) is (Shop) then (SHOES) are (open) since every time we're at the shop, our shoes are open
-this implies that our shoes are open BECAUSE we're at the shop. We can therefore build animplication from this.
-We do the same for all other repititions.
-The final ruleset emerges as:
+this implies that our shoes are open BECAUSE we're at the shop. We can therefore build an implication from this.
+We do the same for all other repetitions.
+The final rule-set emerges as:
 - if (LOCATION:Shop) then (SHOES:open)
 - if (SHIRT:t-shirt) then (SHOES:open)
 - if (SHOES:open) then (SHIRT:t-shirt)
