@@ -6,18 +6,23 @@ using EasyRuleDymeRule.Services;
 using DymeFluentSyntax.Models;
 using DymeRuleEngine.Contracts;
 using DymeRuleEngine.Models;
+using System;
 
 namespace Tests
 {
 	[TestFixture]
     public class DymeRuleEngineEvaluator_Tests
     {
-		private DymeRuleEvaluator sut;
+		private IEvaluator sut;
+        private IMetricService metricSvc;
+        private IWorldReader worldReader;
 
-		[SetUp]
+        [SetUp]
 		public void CreateSut()
 		{
-			sut = new DymeRuleEvaluator();
+            metricSvc = new DefaultMetricService();
+            worldReader = new DictionaryWorldReader();
+            sut = new DymeRuleEvaluator(worldReader, metricSvc);
 		}
 
 		[Test]
@@ -179,5 +184,27 @@ namespace Tests
             Assert.AreEqual(expected, result);
         }
 
+        [Test]
+        public void MtricSvc_GivenRuleAndworld_ExpectPass()
+        {
+            // Arrange ...
+            var parser = new EasyRuleDymeRuleConverter();
+            var stateOfTheWorld = new Dictionary<string, string>();
+            stateOfTheWorld.Add("weather", "sunny");
+            stateOfTheWorld.Add("destination", "beach");
+            var inputRule = "IF (weather) IS (sunny) THEN (destination) IS (beach)";
+            var evaluatableRule = parser.ConvertEasyRuleToDymeRule(inputRule);
+            var expectedResult = new Dictionary<string, int>();
+            expectedResult.Add("EvaluateImplication", 1);
+            expectedResult.Add("EvaluateProposition", 2);
+            expectedResult.Add("GetValueFromWorld", 2);
+            // Act ...
+            sut.IsTrueIn(evaluatableRule, stateOfTheWorld);
+
+            var result = (metricSvc as DefaultMetricService).metrics;
+            // Assert ...
+            CollectionAssert.AreEquivalent(expectedResult, result);
+        }
     }
+
 }

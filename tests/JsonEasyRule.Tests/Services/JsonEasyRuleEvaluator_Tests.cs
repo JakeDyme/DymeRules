@@ -26,5 +26,8 @@ namespace JsonEasyRulesTests
             // Assert...
             Assert.AreEqual(expectedRules, result);
         }
+
     }
+
+
 }

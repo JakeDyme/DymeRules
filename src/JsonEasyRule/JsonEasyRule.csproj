@@ -34,6 +34,10 @@
     </ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\JsonDymeWorld\lib\dotnet45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -45,6 +49,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Contracts\Enums.cs" />
+    <Compile Include="Models\JsonPathWorldAnalyser.cs" />
+    <Compile Include="Models\JsonPathWorldReader.cs" />
     <Compile Include="Services\JsonEasyRuleEvaluator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -60,10 +66,6 @@
     <ProjectReference Include="..\EasyRuleDymeRule\EasyRuleDymeRule.csproj">
       <Project>{a8799513-5677-48c4-b25d-e9af3a97e109}</Project>
       <Name>EasyRuleDymeRule</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\JsonDymeWorld\JsonDymeWorld.csproj">
-      <Project>{22eb099a-7c42-463c-b448-dd20fe820b72}</Project>
-      <Name>JsonDymeWorld</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

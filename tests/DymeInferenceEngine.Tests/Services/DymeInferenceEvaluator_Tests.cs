@@ -1,25 +1,36 @@
-﻿using JsonDymeWorld.Services;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System.Collections.Generic;
-using System.Linq;
 using DymeRuleEngine.Contracts;
 using DymeFluentSyntax.Models;
 using DymeInferenceEngine.Contracts;
 using DymeInferenceEngine.Services;
 using DymeRuleEngine.Models;
+using DymeInferenceEngine.Models;
+using DymeRuleEngine.Services;
+using JsonEasyRule.Models;
 
 namespace DymeInferenceEngine.Tests
 {
     [TestFixture]
     public class DymeInferenceEvaluator_Tests
     {
+        IWorldReader _worldReader = null;
+        IWorldAnalyser _worldAnalyser = null;
+        IMetricService _metricSvc = null;
+        [SetUp]
+        public void Setup() {
+            _worldReader = new JsonPathWorldReader();
+            _worldAnalyser = new JsonPathWorldAnalyser();
+            _metricSvc = new DefaultMetricService();
+        }
+
         [Test]
         public void CreateRule_GivenWorlds_ExpectSimpleImply()
         {
             // Arrange...
             var world1 = "{'Name':'Bob', 'Age':'40'}";
             
-            var sut = new DymeInferenceEvaluator();
+            var sut = new DymeInferenceEvaluator(_worldReader, _worldAnalyser);
             var expected = new List<IEvaluatable>();
             expected.Add(If
                 .When(ItsAFact.That("Name").Is("Bob"))
@@ -29,11 +40,9 @@ namespace DymeInferenceEngine.Tests
                 .When(ItsAFact.That("Age").Is("40"))
                 .Then(ItsAFact.That("Name").Is("Bob"))
             );
-            var jsonToDymeWorldParserSvc = new JsonDymeWorldConverter();
-            var world = jsonToDymeWorldParserSvc.ConvertJsonToDymeWorld(world1);
 
             // Act...
-            var results = sut.GetRulesForWorlds(new List<Dictionary<string,string>>() { world }, PickAttriubutesBy.World);
+            var results = sut.GetRulesForWorlds(new List<string>() { world1 }, InferenceMethod.Optimistic);
 
             // Assert...
             Assert.AreEqual(expected, results);
@@ -47,10 +56,7 @@ namespace DymeInferenceEngine.Tests
             jsonWorlds.Add("{'Name':'Bob', 'Age':'40', 'Year': '2040'}");
             jsonWorlds.Add("{'Name':'Bob', 'Age':'30', 'Year': '2030'}");
 
-            var jsonToDymeWorldParserSvc = new JsonDymeWorldConverter();
-            var worlds = jsonWorlds.Select(w=> jsonToDymeWorldParserSvc.ConvertJsonToDymeWorld(w));
-
-            var sut = new DymeInferenceEvaluator();
+            var sut = new DymeInferenceEvaluator(_worldReader, _worldAnalyser);
             var expected = new List<IEvaluatable>();
             expected.Add(If.When(ItsAFact.That("Year").Is("2040")).Then(ItsAFact.That("Age").Is("40")));
             expected.Add(If.When(ItsAFact.That("Year").Is("2030")).Then(ItsAFact.That("Age").Is("30")));
@@ -62,7 +68,7 @@ namespace DymeInferenceEngine.Tests
             expected.Add(If.When(ItsAFact.That("Age").Is("30")).Then(ItsAFact.That("Year").Is("2030")));
 
             // Act...
-            var results = sut.GetRulesForWorlds(worlds, PickAttriubutesBy.World);
+            var results = sut.GetRulesForWorlds(jsonWorlds, InferenceMethod.Optimistic);
 
             // Assert...
             CollectionAssert.AreEquivalent(expected, results);
@@ -77,67 +83,13 @@ namespace DymeInferenceEngine.Tests
             jsonWorlds.Add("{'Name':'Bob', 'Age':'30', 'Year': '2030'}");
             jsonWorlds.Add("{'Name':'Sam', 'Age':'30', 'Year': '2030'}");
             jsonWorlds.Add("{'Name':'Tom', 'Age':'30', 'Year': '2010'}");
-            var jsonToDymeWorldParserSvc = new JsonDymeWorldConverter();
-            var worlds = jsonWorlds.Select(w => jsonToDymeWorldParserSvc.ConvertJsonToDymeWorld(w));
 
-            var sut = new DymeInferenceEvaluator();
+            var sut = new DymeInferenceEvaluator(_worldReader, _worldAnalyser);
             var expected = new List<IEvaluatable>();
-            expected.Add(If.When(ItsAFact.That("Year").Is("2040")).Then(ItsAFact.That("Age").Is("40")));
             expected.Add(If.When(ItsAFact.That("Year").Is("2030")).Then(ItsAFact.That("Age").Is("30")));
-            expected.Add(If.When(ItsAFact.That("Year").Is("2010")).Then(ItsAFact.That("Age").Is("30")));
-            
+                        
             // Act...
-            var results = sut.GetRulesForWorlds(worlds, PickAttriubutesBy.World);
-
-            // Assert...
-            CollectionAssert.AreEquivalent(expected, results);
-        }
-
-        [Test]
-        public void GetRulesForWorldsUsingDeltas_GivenWorlds_ExpectRuleSet()
-        {
-            // Arrange...
-            var jsonWorlds = new List<string>();
-            jsonWorlds.Add("{'Name':'Bob', 'Age':'40', 'Year': '2040'}");
-            jsonWorlds.Add("{'Name':'Bob', 'Age':'30', 'Year': '2030'}");
-            jsonWorlds.Add("{'Name':'Sam', 'Age':'30', 'Year': '2030'}");
-            jsonWorlds.Add("{'Name':'Tom', 'Age':'30', 'Year': '2010'}");
-            var jsonToDymeWorldParserSvc = new JsonDymeWorldConverter();
-            var worlds = jsonWorlds.Select(w => jsonToDymeWorldParserSvc.ConvertJsonToDymeWorld(w));
-
-            var sut = new DymeInferenceEvaluator();
-            var expected = new List<IEvaluatable>();
-            expected.Add(If.When(ItsAFact.That("Year").Is("2040")).Then(ItsAFact.That("Age").Is("40")));
-            expected.Add(If.When(ItsAFact.That("Year").Is("2030")).Then(ItsAFact.That("Age").Is("30")));
-            expected.Add(If.When(ItsAFact.That("Year").Is("2010")).Then(ItsAFact.That("Age").Is("30")));
-
-            // Act...
-            var results = sut.GetRulesForWorlds(worlds, PickAttriubutesBy.WorldDeltas);
-
-            // Assert...
-            CollectionAssert.AreEquivalent(expected, results);
-        }
-
-        [Test]
-        public void GetRulesForWorldsUsingMatching_GivenWorlds_ExpectRuleSet()
-        {
-            // Arrange...
-            var jsonWorlds = new List<string>();
-            jsonWorlds.Add("{'Name':'Bob', 'Age':'40', 'Year': '2040'}");
-            jsonWorlds.Add("{'Name':'Bob', 'Age':'30', 'Year': '2030'}");
-            jsonWorlds.Add("{'Name':'Sam', 'Age':'30', 'Year': '2030'}");
-            jsonWorlds.Add("{'Name':'Tom', 'Age':'30', 'Year': '2010'}");
-            var jsonToDymeWorldParserSvc = new JsonDymeWorldConverter();
-            var worlds = jsonWorlds.Select(w => jsonToDymeWorldParserSvc.ConvertJsonToDymeWorld(w));
-
-            var sut = new DymeInferenceEvaluator();
-            var expected = new List<IEvaluatable>();
-            expected.Add(If.When(ItsAFact.That("Year").Is("2040")).Then(ItsAFact.That("Age").Is("40")));
-            expected.Add(If.When(ItsAFact.That("Year").Is("2030")).Then(ItsAFact.That("Age").Is("30")));
-            expected.Add(If.When(ItsAFact.That("Year").Is("2010")).Then(ItsAFact.That("Age").Is("30")));
-
-            // Act...
-            var results = sut.GetRulesForWorlds(worlds, PickAttriubutesBy.WorldMatching);
+            var results = sut.GetRulesForWorlds(jsonWorlds, InferenceMethod.Pessimistic);
 
             // Assert...
             CollectionAssert.AreEquivalent(expected, results);
@@ -153,17 +105,15 @@ namespace DymeInferenceEngine.Tests
             jsonWorlds.Add("{'Name':'Sam', 'Age':'30', 'Year': '2030'}");
             jsonWorlds.Add("{'Name':'Tom', 'Age':'30', 'Year': '2010'}");
             jsonWorlds.Add("{'Name':'Joe', 'Age':'40', 'Year': '2040'}");
-            var jsonToDymeWorldParserSvc = new JsonDymeWorldConverter();
-            var worlds = jsonWorlds.Select(w => jsonToDymeWorldParserSvc.ConvertJsonToDymeWorld(w));
 
-            var sut = new DymeInferenceEvaluator();
+            var sut = new DymeInferenceEvaluator(_worldReader, _worldAnalyser);
             var expected = new List<IEvaluatable>();
             expected.Add(If.When(ItsAFact.That("Year").Is("2040")).Then(ItsAFact.That("Age").Is("40")));
             expected.Add(If.When(ItsAFact.That("Age").Is("40")).Then(ItsAFact.That("Year").Is("2040")));
             expected.Add(If.When(ItsAFact.That("Year").Is("2030")).Then(ItsAFact.That("Age").Is("30")));
 
             // Act...
-            var results = sut.GetRulesPessimisticallyFromWorlds(worlds);
+            var results = sut.GetRulesForWorlds(jsonWorlds, InferenceMethod.Pessimistic);
 
             // Assert...
             CollectionAssert.AreEquivalent(expected, results);
@@ -179,15 +129,13 @@ namespace DymeInferenceEngine.Tests
             jsonWorlds.Add("{'planet':'Venus', 'sky':'yellow', 'ground': 'hard', 'cat': 'InCharge'}");
             jsonWorlds.Add("{'planet':'Mars', 'sky':'red', 'ground': 'soft', 'cat': 'InCharge'}");
             jsonWorlds.Add("{'planet':'Pluto', 'sky':'blue', 'ground': 'soft', 'cat': 'InCharge'}");
-            var jsonToDymeWorldParserSvc = new JsonDymeWorldConverter();
-            var worlds = jsonWorlds.Select(w => jsonToDymeWorldParserSvc.ConvertJsonToDymeWorld(w));
 
-            var sut = new DymeInferenceEvaluator();
+            var sut = new DymeInferenceEvaluator(_worldReader, _worldAnalyser);
             var expected = new List<IEvaluatable>();
             expected.Add(If.When(ItsAFact.That("sky").Is("blue")).Then(ItsAFact.That("ground").Is("soft")));
 
             // Act...
-            var results = sut.GetRulesPessimisticallyFromWorlds(worlds);
+            var results = sut.GetRulesForWorlds(jsonWorlds, InferenceMethod.Pessimistic);
 
             // Assert...
             CollectionAssert.AreEquivalent(expected, results);
@@ -292,9 +240,6 @@ namespace DymeInferenceEngine.Tests
             jsonWorlds.Add("{'planet':'Earth', 'sky':'blue', 'ground': 'soft', 'cat': 'InCharge'}");
             jsonWorlds.Add("{'planet':'Pluto', 'sky':'blue', 'ground': 'soft', 'cat': 'grumpy'}");
 
-            var jsonToDymeWorldParserSvc = new JsonDymeWorldConverter();
-            var worlds = jsonWorlds.Select(w => jsonToDymeWorldParserSvc.ConvertJsonToDymeWorld(w));
-
             var input = new List<Proposition>();
             input.Add(ItsAFact.That("sky").Is("blue") as Proposition);
             input.Add(ItsAFact.That("ground").Is("soft") as Proposition);
@@ -303,13 +248,58 @@ namespace DymeInferenceEngine.Tests
             var expected = new List<IEvaluatable>();
             expected.Add(All.Of(ItsAFact.That("sky").Is("blue")).And(ItsAFact.That("ground").Is("soft")).IsTrue());
 
-            var sut = new DymeInferenceEvaluator();
+            var sut = new DymeInferenceEvaluator(_worldReader, _worldAnalyser);
 
             // Act...
-            var results = sut.AsConjunctionGetAllFactThatRepeatWhenOtherFactRepeat(worlds, input);
+            var results = sut.AsConjunctionGetAllFactsThatRepeatWhenOtherFactsRepeat(jsonWorlds, input);
 
             // Assert...
             CollectionAssert.AreEquivalent(expected, results);
         }
+
+
+        [Test]
+        public void PessimisticWorld_GivenWorlds_ExpectMetrics()
+        {
+            // Arrange...
+            var jsonWorlds = new List<string>();
+            jsonWorlds.Add("{'Name':'Bob', 'Age':'40', 'Year': '2040'}");
+            jsonWorlds.Add("{'Name':'Bob', 'Age':'30', 'Year': '2030'}");
+            jsonWorlds.Add("{'Name':'Sam', 'Age':'30', 'Year': '2030'}");
+            jsonWorlds.Add("{'Name':'Tom', 'Age':'30', 'Year': '2010'}");
+            jsonWorlds.Add("{'Name':'Joe', 'Age':'40', 'Year': '2040'}");
+            var sut = new DymeInferenceEvaluator(_worldReader, _worldAnalyser, _metricSvc);
+            var expect = new Dictionary<string, int>();
+            expect.Add("EvaluateProposition", 498);
+            expect.Add("GetValueFromWorld", 498);
+            // Act...
+            var rules = sut.GetRulesForWorlds(jsonWorlds, InferenceMethod.Pessimistic);
+            var results = (_metricSvc as DefaultMetricService).metrics;
+            // Assert...
+            CollectionAssert.AreEquivalent(expect, results);
+        }
+
+        [Test]
+        public void OptimisticWorld_GivenWorlds_ExpectMetrics()
+        {
+            // Arrange...
+            var jsonWorlds = new List<string>();
+            jsonWorlds.Add("{'Name':'Bob', 'Age':'40', 'Year': '2040'}");
+            jsonWorlds.Add("{'Name':'Bob', 'Age':'30', 'Year': '2030'}");
+            jsonWorlds.Add("{'Name':'Sam', 'Age':'30', 'Year': '2030'}");
+            jsonWorlds.Add("{'Name':'Tom', 'Age':'30', 'Year': '2010'}");
+            jsonWorlds.Add("{'Name':'Joe', 'Age':'40', 'Year': '2040'}");
+            var sut = new DymeInferenceEvaluator(_worldReader, _worldAnalyser, _metricSvc);
+            var expect = new Dictionary<string, int>();
+            expect.Add("EvaluateImplication", 110);
+            expect.Add("EvaluateProposition", 156);
+            expect.Add("GetValueFromWorld", 156);
+            // Act...
+            var rules = sut.GetRulesForWorlds(jsonWorlds, InferenceMethod.Optimistic);
+            var results = (_metricSvc as DefaultMetricService).metrics;
+            // Assert...
+            CollectionAssert.AreEquivalent(expect, results);
+        }
+
     }
 }

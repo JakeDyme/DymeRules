@@ -50,15 +50,19 @@
     <Compile Include="Contracts\IEvaluator.cs" />
     <Compile Include="Contracts\IImplication.cs" />
     <Compile Include="Contracts\IJunction.cs" />
+    <Compile Include="Services\DefaultWorldReader.cs" />
     <Compile Include="Models\Proposition.cs" />
     <Compile Include="Models\Conjunction.cs" />
     <Compile Include="Models\Implication.cs" />
     <Compile Include="Models\Disjunction.cs" />
     <Compile Include="Contracts\Enums.cs" />
     <Compile Include="Contracts\IEvaluatable.cs" />
+    <Compile Include="Services\DefaultMetricService.cs" />
+    <Compile Include="Helpers\DymeConstructHelper.cs" />
     <Compile Include="Services\DymeRuleSetEvaluator.cs" />
     <Compile Include="Services\DymeRuleEvaluator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Contracts\IWorldReader.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

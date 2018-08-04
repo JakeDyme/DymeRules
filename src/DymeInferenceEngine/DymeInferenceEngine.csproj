@@ -41,10 +41,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Contracts\Enums.cs" />
+    <Compile Include="Contracts\IWorldAnalyser.cs" />
     <Compile Include="Services\AttributesHelper.cs" />
+    <Compile Include="Models\DictionaryWorldAnalyser.cs" />
     <Compile Include="Services\DymeInferenceEvaluator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ImplicationHelper.cs" />
+    <Compile Include="Services\Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DymeFluentAdapter\DymeFluentAdapter.csproj">
@@ -54,10 +57,6 @@
     <ProjectReference Include="..\DymeRuleEngine\DymeRuleEngine.csproj">
       <Project>{D8F3E2DA-4731-4165-BA14-1A965DD52739}</Project>
       <Name>DymeRuleEngine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\JsonDymeWorld\JsonDymeWorld.csproj">
-      <Project>{22eb099a-7c42-463c-b448-dd20fe820b72}</Project>
-      <Name>JsonDymeWorld</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

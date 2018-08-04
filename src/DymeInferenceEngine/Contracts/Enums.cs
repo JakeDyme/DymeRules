@@ -1,18 +1,10 @@
 ﻿
 namespace DymeInferenceEngine.Contracts
 {
-    public enum BuildRulesFromAttributesUsing
+    public enum InferenceMethod
     {
-        CartesianImplication,
-        ByWorldDeltas,
-        ByWorldMatching
-    }
-
-    public enum PickAttriubutesBy
-    {
-        World,
-        WorldDeltas,
-        WorldMatching
+        Optimistic,
+        Pessimistic
     }
 
 }

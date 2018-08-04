@@ -7,51 +7,57 @@ using System.Linq;
 namespace DymeRuleEngine.Services
 {
 	public class DymeRuleEvaluator: IEvaluator
-	{
-		public bool IsTrueIn(IEvaluatable rule, Dictionary<string, string> world)
+    {
+        IMetricService _metricService;
+        IWorldReader _worldInterrogater;
+        public DymeRuleEvaluator(IWorldReader worldInterrogator, IMetricService metricService = null) {
+            _worldInterrogater = worldInterrogator;
+            _metricService = metricService ?? new DefaultMetricService();
+        }
+        public bool IsTrueIn<World>(IEvaluatable rule, World world)
 		{
             return EvaluateAgainst(rule, world);
         }
 
-        private bool EvaluateAgainst(IEvaluatable evaluatable, Dictionary<string, string> world)
+        private bool EvaluateAgainst<World>(IEvaluatable evaluatable, World world)
         {
             switch (evaluatable.GetType().Name)
             {
                 case nameof(Conjunction):
                     return EvaluateConjunction(evaluatable as Conjunction, world);
-                    break;
                 case nameof(Implication):
                     return EvaluateImplication(evaluatable as Implication, world);
-                    break;
                 case nameof(Disjunction):
                     return EvaluateDisjunction(evaluatable as Disjunction, world);
-                    break;
                 case nameof(Proposition):
                     return EvaluateProposition(evaluatable as Proposition, world);
-                    break;
             }
-            throw new Exception("Unkonwn construct");
+            throw new Exception("Unknown construct");
         }
 
-        public bool EvaluateConjunction(Conjunction conjunction, Dictionary<string,string> world)
+        public bool EvaluateConjunction<World>(Conjunction conjunction, World world)
         {
+            _metricService.IncrementMetric("EvaluateConjunction");
             return !conjunction.Arguments.Any(arg => FoundABadOne(EvaluateAgainst(arg, world)));
         }
 
-        public bool EvaluateImplication(Implication implication, Dictionary<string, string> world)
+        public bool EvaluateImplication<World>(Implication implication, World world)
         {
+            _metricService.IncrementMetric("EvaluateImplication");
             if (NotApplicable(implication, world))
                 return true;
             return EvaluateAgainst(implication.Consequent, world);
         }
 
-        public bool EvaluateDisjunction(Disjunction disjunction, Dictionary<string, string> world)
+        public bool EvaluateDisjunction<World>(Disjunction disjunction, World world)
         {
+            _metricService.IncrementMetric("EvaluateDisjunction");
             return disjunction.Arguments.Any(arg => FoundAWinner(EvaluateAgainst(arg, world)));
         }
 
-        public bool EvaluateProposition(Proposition proposition, Dictionary<string, string> world)
+        public bool EvaluateProposition<World>(Proposition proposition, World world)
         {
+            _metricService.IncrementMetric("EvaluateProposition");
             var actualValue= GetValueFromWorld(world, proposition.AttributeName);
             string expectedValue = proposition.BinaryArgument ? GetValueFromWorld(world, proposition.AttributeValue) : proposition.AttributeValue;
 
@@ -70,7 +76,13 @@ namespace DymeRuleEngine.Services
             throw new Exception("Unexpected relational operator");
         }
 
-        private bool NotApplicable(Implication implication, Dictionary<string, string> world)
+        private string GetValueFromWorld<WorldType>(WorldType world, string attributeName)
+        {
+            _metricService.IncrementMetric("GetValueFromWorld");
+            return _worldInterrogater.GetValueFromWorld(attributeName, world);
+        }
+
+        private bool NotApplicable<World>(Implication implication, World world)
         {
             return EvaluateAgainst(implication.Antecedent, world) == false;
         }
@@ -85,15 +97,8 @@ namespace DymeRuleEngine.Services
             return result == true;
         }
 
-        private bool AttributeExistsInWorld(Dictionary<string, string> world, string attributeName)
-        {
-            return world.ContainsKey(attributeName);
-        }
 
-        private string GetValueFromWorld(Dictionary<string, string> world, string attributeName)
-        {
-            return world[attributeName];
-        }
+
 
 
 

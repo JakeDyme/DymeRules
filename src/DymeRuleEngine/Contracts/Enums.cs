@@ -1,15 +1,9 @@
 ﻿
 namespace DymeRuleEngine.Contracts
 {
-    public interface IMetricsService
+    public interface IMetricService
     {
-        void IncrementMetric(string metricIdentifier, string data = "");
-    }
-
-    public interface IAttributeProperties
-    {
-        bool BinaryArgument { get; set; }
-        string IsCollectionOf { get; set; }
+        void IncrementMetric(string metricIdentifier);
     }
 
     public enum Predicate

@@ -70,9 +70,9 @@
       <Project>{D8F3E2DA-4731-4165-BA14-1A965DD52739}</Project>
       <Name>DymeRuleEngine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\JsonDymeWorld\JsonDymeWorld.csproj">
-      <Project>{22EB099A-7C42-463C-B448-DD20FE820B72}</Project>
-      <Name>JsonDymeWorld</Name>
+    <ProjectReference Include="..\..\src\JsonEasyRule\JsonEasyRule.csproj">
+      <Project>{693CB165-C637-4A98-A617-41D8C1866405}</Project>
+      <Name>JsonEasyRule</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

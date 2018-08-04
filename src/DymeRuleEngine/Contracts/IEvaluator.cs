@@ -8,6 +8,6 @@ namespace DymeRuleEngine.Contracts
 {
     public interface IEvaluator
     {
-        bool IsTrueIn(IEvaluatable rule, Dictionary<string, string> world);
+        bool IsTrueIn<World>(IEvaluatable rule, World world);
     }
 }

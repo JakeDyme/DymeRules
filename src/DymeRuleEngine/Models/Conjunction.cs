@@ -67,11 +67,6 @@ namespace DymeRuleEngine.Models
             return true;
         }
 
-        //private bool FoundABadOne(bool result)
-        //{
-        //    return result == false;
-        //}
-
         private bool ScenarioContainsArgumentRelation(IEnumerable<IEvaluatable> arguments, IEvaluatable argument)
         {
             return arguments.Any(arg => argument.RelationallyEquivalentTo(arg));
