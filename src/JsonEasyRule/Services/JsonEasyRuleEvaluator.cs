@@ -57,6 +57,12 @@ namespace JsonToEasyRules.Services
             return failingJsonWorlds;
         }
 
+        public bool IsTrueIn(string easyRule, string jsonWorld)
+        {
+            var dymeRule = _easyRuleDymeRuleSvc.ConvertEasyRuleToDymeRule(easyRule);
+            return _ruleEvaluatorSvc.IsTrueIn(dymeRule, jsonWorld);
+        }
+
         private IEnumerable<IEvaluatable> GetRulesFromWorlds<WorldType>(IEnumerable<WorldType> dymeWorlds, InferenceType inferenceType)
         {
             switch (inferenceType)

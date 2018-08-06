@@ -1,7 +1,6 @@
 ﻿using DymeRuleEngine.Contracts;
 using DymeRuleEngine.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace DymeRuleEngine.Services
@@ -60,6 +59,8 @@ namespace DymeRuleEngine.Services
             _metricService.IncrementMetric("EvaluateProposition");
             var actualValue= GetValueFromWorld(world, proposition.AttributeName);
             string expectedValue = proposition.BinaryArgument ? GetValueFromWorld(world, proposition.AttributeValue) : proposition.AttributeValue;
+            ValidateDataTypeForOperation(actualValue, proposition.Operator, proposition.AttributeName);
+            ValidateDataTypeForOperation(expectedValue, proposition.Operator, proposition.AttributeName);
 
             if (proposition.Operator == Predicate.IS)
                 return (expectedValue == actualValue);
@@ -74,6 +75,21 @@ namespace DymeRuleEngine.Services
             if (proposition.Operator == Predicate.IN)
                 return (actualValue.IndexOf(expectedValue) > -1);
             throw new Exception("Unexpected relational operator");
+        }
+
+        private void ValidateDataTypeForOperation(string data, Predicate operation, string query) {
+
+            if (MustBeNumberAccordingTo(operation) && !IsNumber(data))
+                throw new Exception($"The value must be a number. Query: ({query}) Problem value: ({data})");
+        }
+        private bool MustBeNumberAccordingTo(Predicate operation) {
+            return operation == Predicate.GREATER_THAN
+                || operation == Predicate.LESS_THAN;
+        }
+
+        private bool IsNumber(string input) {
+            double n;
+            return double.TryParse(input, out n);
         }
 
         private string GetValueFromWorld<WorldType>(WorldType world, string attributeName)

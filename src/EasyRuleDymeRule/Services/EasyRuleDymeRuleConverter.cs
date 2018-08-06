@@ -9,11 +9,19 @@ namespace EasyRuleDymeRule.Services
 {
     public class EasyRuleDymeRuleConverter
     {
-        const string _factRegexTemplate = @"^\s*\((.+)\)\s+(#OperatorMapKeys#)\s+(setting)*\((.+)\)\s*$";
-        readonly string _implyRegex = @"^\s*(IF|if)\s+(.+)\s+(THEN|then)\s+(.+)\s*$";
-        readonly string _conjunctionRegex = @"^\s*(.+)\s+(AND|and)\s+(.+)\s*$";
-        readonly string _disjunctionRegex = @"^\s*(.+)\s+(OR|or)\s+(.+)\s*$";
-        readonly string _factRegex;
+        const string _regexMatchInnerMostBrackets = @"\(((?:\(??[^\(]*?))\)";
+        const string _s = @"(\r\n|\r|\n|\f|\t|\s)";
+        readonly string _templateRegexForFact = $@"^{_s}*\((.+)\){_s}+(#OperatorMapKeys#){_s}+(setting)*\((.+)\){_s}*$";
+        readonly string _regexMatchImplication = $@"^{_s}*(IF|if){_s}+(.+){_s}+(THEN|then){_s}+(.+){_s}*$";
+        readonly string _regexMatchConjunction = $@"^{_s}*(.+){_s}+(AND|and){_s}+(.+){_s}*$";
+        readonly string _regexMatchDisjunction = $@"^{_s}*(.+){_s}+(OR|or){_s}+(.+){_s}*$";
+        const string _mapPrefix = "#MAP#";
+        const string _mapSuffix = "#";
+        readonly string _regexCompressionMapSurrogate = $@"{_mapPrefix}(\d+){_mapSuffix}";
+        readonly string _regexMatchFact;
+        
+        Dictionary<string, string> _argumentCompressionMap = new Dictionary<string, string>();
+
         readonly Dictionary<string, Predicate> _operatorMap = new Dictionary<string, Predicate>();
 
         public EasyRuleDymeRuleConverter()
@@ -38,16 +46,50 @@ namespace EasyRuleDymeRule.Services
             _operatorMap.Add("is less than", Predicate.LESS_THAN);
             _operatorMap.Add("NOT", Predicate.NOT);
             _operatorMap.Add("not", Predicate.NOT);
+            _operatorMap.Add("IS NOT", Predicate.NOT);
+            _operatorMap.Add("is not", Predicate.NOT);
             _operatorMap.Add("CONTAINS", Predicate.CONTAINS);
             _operatorMap.Add("contains", Predicate.CONTAINS);
             _operatorMap.Add("IN", Predicate.IN);
             _operatorMap.Add("in", Predicate.IN);
 
-            _factRegex = _factRegexTemplate.Replace("#OperatorMapKeys#", _operatorMap.Select(m => m.Key).Aggregate((a, b) => $"{a}|{b}"));
+            _regexMatchFact = _templateRegexForFact.Replace("#OperatorMapKeys#", _operatorMap.Select(m => m.Key).Aggregate((a, b) => $"{a}|{b}"));
         }
         public IEvaluatable ConvertEasyRuleToDymeRule(string ruleString)
         {
-            return GetEvaluatable(ruleString);
+            var compressedString = CompressString(ruleString);
+            return GetEvaluatable(compressedString);
+        }
+
+        private bool HasParenthesis(string inputString)
+        {
+            var pattern = new Regex(_regexMatchInnerMostBrackets);
+            return pattern.IsMatch(inputString);
+        }
+
+        private string CompressString(string inputString)
+        {
+            var compressedString = inputString;
+            var pattern = new Regex(_regexMatchInnerMostBrackets);
+            var matches = pattern.Matches(inputString);
+            while (HasParenthesis(compressedString))
+            {
+                foreach (Match match in matches)
+                {
+                    var capture = match.Groups[0].Value;
+                    compressedString = MapAndReplaceStringWithSurrogate(compressedString, capture);
+                }
+                matches = pattern.Matches(compressedString);
+            }
+            return MapAndReplaceStringWithSurrogate(compressedString, compressedString);
+        }
+
+        private string MapAndReplaceStringWithSurrogate(string inputString, string stringToReplace)
+        {
+            var nextMappingSurrogate = $"{_mapPrefix}{_argumentCompressionMap.Count()}{_mapSuffix}";
+            _argumentCompressionMap.Add(nextMappingSurrogate, stringToReplace);
+            var augmentedString = inputString.Replace(stringToReplace, nextMappingSurrogate);
+            return augmentedString;
         }
 
         public string ConvertDymeRuleToEasyRule(IEvaluatable dymeRule)
@@ -107,6 +149,7 @@ namespace EasyRuleDymeRule.Services
 
         private IEvaluatable GetEvaluatable(string inputString)
         {
+            //inputString = UncompressString(inputString);
             if (IsImplication(inputString))
                 return GetImplication(inputString);
             if (IsConjunction(inputString))
@@ -115,50 +158,58 @@ namespace EasyRuleDymeRule.Services
                 return GetDisjunction(inputString);
             if (IsTerm(inputString))
                 return GetTerm(inputString);
+            if (HasCompression(inputString))
+                return GetEvaluatable(DecompressStringLevel(inputString));
             throw new Exception("Syntax error. Cannot determine logic structure");
+        }
+
+        private bool HasCompression(string inputString)
+        {
+            var pattern = new Regex(_regexCompressionMapSurrogate);
+            return pattern.IsMatch(inputString);
         }
 
         private bool IsImplication(string inputString)
         {
-            var pattern = new Regex(_implyRegex);
+            var pattern = new Regex(_regexMatchImplication);
             return pattern.IsMatch(inputString);
         }
 
         private bool IsConjunction(string inputString)
         {
-            var pattern = new Regex(_conjunctionRegex);
+            var pattern = new Regex(_regexMatchConjunction);
             return pattern.IsMatch(inputString);
         }
         private bool IsDisjunction(string inputString)
         {
-            var pattern = new Regex(_disjunctionRegex);
+            var pattern = new Regex(_regexMatchDisjunction);
             return pattern.IsMatch(inputString);
         }
         private bool IsTerm(string inputString)
         {
-            var pattern = new Regex(_factRegex);
+            var pattern = new Regex(_regexMatchFact);
             return pattern.IsMatch(inputString);
         }
 
         private IEvaluatable GetImplication(string inputString)
         {
-            var pattern = new Regex(_implyRegex);
+            var pattern = new Regex(_regexMatchImplication);
             var matches = pattern.Matches(inputString);
-            var antecedent = GetEvaluatable(matches[0].Groups[2].Value);
-            var consequent = GetEvaluatable(matches[0].Groups[4].Value);
+            var antecedent = GetEvaluatable(matches[0].Groups[4].Value);
+            var consequent = GetEvaluatable(matches[0].Groups[8].Value);
             return new Implication(antecedent, consequent);
         }
 
         private IEvaluatable GetConjunction(string inputString)
         {
-            var pattern = new Regex(_conjunctionRegex);
+            var pattern = new Regex(_regexMatchConjunction);
             var matches = pattern.Matches(inputString);
             var arguments = new List<IEvaluatable>();
-            arguments.Add(GetEvaluatable(matches[0].Groups[1].Value));
+            arguments.Add(GetEvaluatable(matches[0].Groups[2].Value));
 
             foreach (Match match in matches)
             {
-                arguments.Add(GetEvaluatable(match.Groups[3].Value));
+                arguments.Add(GetEvaluatable(match.Groups[6].Value));
             }
             arguments = distributeArguments<Conjunction>(arguments).ToList();
             return new Conjunction(arguments);
@@ -166,13 +217,13 @@ namespace EasyRuleDymeRule.Services
 
         private IEvaluatable GetDisjunction(string inputString)
         {
-            var pattern = new Regex(_disjunctionRegex);
+            var pattern = new Regex(_regexMatchDisjunction);
             var matches = pattern.Matches(inputString);
             var arguments = new List<IEvaluatable>();
-            arguments.Add(GetEvaluatable(matches[0].Groups[1].Value));
+            arguments.Add(GetEvaluatable(matches[0].Groups[2].Value));
             foreach (Match match in matches)
             {
-                arguments.Add(GetEvaluatable(match.Groups[3].Value));
+                arguments.Add(GetEvaluatable(match.Groups[6].Value));
             }
             arguments = distributeArguments<Disjunction>(arguments).ToList();
             return new Disjunction(arguments);
@@ -189,14 +240,35 @@ namespace EasyRuleDymeRule.Services
 
         private IEvaluatable GetTerm(string inputString)
         {
-            var pattern = new Regex(_factRegex);
+            inputString = DecompressStringFully(inputString);
+            var pattern = new Regex(_regexMatchFact);
             var matches = pattern.Matches(inputString);
-            Predicate relationalOperator = _operatorMap[matches[0].Groups[2].Value];
-            var attributeName = matches[0].Groups[1].Value;
-            var reflective = !string.IsNullOrEmpty(matches[0].Groups[3].Value);
-            var attributeValue = matches[0].Groups[4].Value;
+            var attributeName = matches[0].Groups[2].Value;
+            Predicate relationalOperator = _operatorMap[matches[0].Groups[4].Value];
+            var reflective = !string.IsNullOrEmpty(matches[0].Groups[6].Value);
+            var attributeValue = matches[0].Groups[7].Value;
             return new Proposition(attributeName, relationalOperator, attributeValue, reflective);
         }
+
+        private string DecompressStringFully(string inputString)
+        {
+            while (HasCompression(inputString)) inputString = DecompressStringLevel(inputString);
+            return inputString;
+        }
+
+        private string DecompressStringLevel(string inputString)
+        {
+            var pattern = new Regex(_regexCompressionMapSurrogate);
+            var matches = pattern.Matches(inputString);
+            var arguments = new List<IEvaluatable>();
+            foreach (Match match in matches)
+            {
+                var capture = match.Groups[0].Value;
+                inputString = inputString.Replace(capture, _argumentCompressionMap[capture]);
+            }
+            return inputString;
+        }
+
 
     }
 }
