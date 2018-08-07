@@ -34,7 +34,7 @@ namespace JsonEasyRulesTests
         [TestCase(@"IF ($.Manufacturers[?(@.Name == 'Acme Co')].Products[0].Name)        IS (Anvil)
                    THEN ($.Manufacturers[?(@.Name == 'Acme Co')].Products[0].Price) IS   (50)")]
         [TestCase(@"IF ($.Stores[0]) IS (Lambton Quay) THEN ($.Manufacturers[0].Name) IS NOT (Fireworks)")]
-        [TestCase(@"if ($.Stores[0]) IS (Lambton Quay) then ($.Manufacturers[0].Products[0].Price) greater than (49.36) AND ($.Manufacturers[0].Products[0].Price) less than (51)")]
+        [TestCase(@"if ($.Stores[0]) IS (Lambton Quay) then ($.Manufacturers[0].Products[0].Price) is greater than (49.36) AND ($.Manufacturers[0].Products[0].Price) is less than (51)")]
         public void IsTrueIn_GivenJsonObjectsAndEasyRule_ValidReturn(string easyRule)
         {
             // Arrange...
