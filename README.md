@@ -29,7 +29,46 @@ The knowledge that Mars's sky is not blue, is existential knowledge that your sy
 Having a rule is a way of encoding that knowledge. 
 Running the rule engine over your configs when you do a deployment allows you to automatically ensure that those types of defects don't make their way into your live environment.
 
+## Using JSON-Path.
+---
+#### Sample Json
+`{
+              'Stores': [
+                'Lambton Quay',
+                'Willis Street'
+              ],
+              'Manufacturers': [
+                {
+                  'Name': 'Acme Co',
+                  'Products': [
+                    {
+                      'Name': 'Anvil',
+                      'Price': 50
+                    }
+                  ]
+                },
+                {
+                  'Name': 'Contoso',
+                  'Products': [
+                    {
+                      'Name': 'Elbow Grease',
+                      'Price': 99.95
+                    },
+                    {
+                      'Name': 'Headlight Fluid',
+                      'Price': 4
+                    }
+                  ]
+                }
+              ]
+            }`
+#### Example Rules (using Json-Path as attribute names)
+if ($.store.book[*].author) contains ("Nigel Rees") then ($.store.book[*].author) contains ("Nigel Rees")
+IF ($.Manufacturers[?(@.Name == 'Acme Co')].Products[0].Name) IS (Anvil) THEN ($.Manufacturers[?(@.Name == 'Acme Co')].Products[0].Price) IS (50)")
+if ($.Stores[0]) IS (Lambton Quay) then ($.Manufacturers[0].Products[0].Price) is greater than (49.36) AND ($.Manufacturers[0].Products[0].Price) is less than (51)")
+
 ## Easy-Rule syntax
+---
 The Easy-Rules syntax is meant to be as close to natural language as possible, making rules easy to read and write.
 
 ###Constructs
@@ -163,12 +202,3 @@ The final rule-set emerges as:
 - if (SHOES:open) then (SHIRT:t-shirt)
 - if (SHIRT:button) then (SHOES:closed)
 - if (SHOES:closed) then (SHIRT:button)
-
-## Creating easy-rules with JSON-Path.
-In the following code:
-#### Sample Json
-``
-#### Example Rules (using Json-Path as attribute names)
-if ($.store.book[*].author) contains ("Nigel Rees") then ($.store.book[*].author) contains ("Nigel Rees")
-IF ($.Manufacturers[?(@.Name == 'Acme Co')].Products[0].Name) IS (Anvil) THEN ($.Manufacturers[?(@.Name == 'Acme Co')].Products[0].Price) IS (50)")
-if ($.Stores[0]) IS (Lambton Quay) then ($.Manufacturers[0].Products[0].Price) is greater than (49.36) AND ($.Manufacturers[0].Products[0].Price) is less than (51)")
