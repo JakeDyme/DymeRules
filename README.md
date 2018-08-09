@@ -67,10 +67,10 @@ Running the rule engine over your configs when you do a deployment allows you to
 #### Example Rules (using Json-Path as attribute names)
 
 - `IF ($.Manufacturers[?(@.Name == 'Acme Co')].Products[0].Name) IS (Anvil)`
-  `THEN ($.Manufacturers[?(@.Name == 'Acme Co')].Products[0].Price) IS (50)")`
+  <br />`THEN ($.Manufacturers[?(@.Name == 'Acme Co')].Products[0].Price) IS (50)")`
 
 - `if ($.Stores[0]) IS (Lambton Quay) `
-  `then ($.Manufacturers[0].Products[0].Price) is greater than (49.36) AND ($.Manufacturers[0].Products[0].Price) is less than (51)")`
+  <br />`then ($.Manufacturers[0].Products[0].Price) is greater than (49.36) AND ($.Manufacturers[0].Products[0].Price) is less than (51)")`
 
 ## Easy-Rule syntax
 ---
