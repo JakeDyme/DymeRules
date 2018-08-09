@@ -13,13 +13,13 @@ Create some rules about Json objects, and then use the rules to validate a set o
 	
 #### Example rules: (in Easy-Rule syntax)
 ---
-	rule =	"if (sky) is (blue) then (planet) is (Earth)"
+	var rule =	"if (sky) is (blue) then (planet) is (Earth)";
 
 #### Example worlds (Json objects):
 ---
-	earthConfig =	{ "planet": "Earth", "sky": "blue" }
-	marsConfig  =	{ "planet": "Mars",  "sky": "blue" }
-	venusConfig  =	{ "planet": "Venus", "sky": "orange" }
+	var earthConfig = "{ 'planet': 'Earth', 'sky': 'blue' }";
+	var marsConfig  = "{ 'planet': 'Mars',  'sky': 'blue' }";
+	var venusConfig = "{ 'planet': 'Venus', 'sky': 'orange' }";
 
 #### Example usage:
 ---
@@ -29,20 +29,21 @@ Create some rules about Json objects, and then use the rules to validate a set o
 	var validVenus = evaluator.IsTrueIn(rule, marsConfig);
 	
 #### Returns:
----
-validEarth = true;
-validMars = false;
-validVenus = true;
+--------------
+	validEarth = true;  *(because the sky is blue in this world and the planet's name is Earth)*
+	validMars  = false; *(because the sky is blue in this world but the planets name is Mars)*
+	validVenus = true;  *(because the sky is not blue)*
 
 #### Explanation
----
+----------------
 World1(Earth) will return true, and World2(Mars) will return false.
 This is because according to our rule, the planet must be Earth if the sky is blue,
 therefore World2 fails because the sky is blue, but the planet is Mars.
 If these were two actual configs, then there would be something wrong with config 2.
+Venus evaluates to true because the sky is orange, so immediately the rule says that this config is fine because the rule simply doesn't apply to this world. 
 
 #### Conclusion
----
+---------------
 The knowledge that Mars's sky is not blue, is knowledge that your system doesn't know about, but you know about it.
 Having a rule is a way of encoding that knowledge. 
 Running the rule engine over your configs when you do a deployment allows you to automatically ensure that those types of defects don't make their way into your live environment.
