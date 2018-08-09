@@ -28,13 +28,13 @@ Create some rules about Json objects, and then use the rules to validate a set o
 	var validMars  = evaluator.IsTrueIn(rule, marsConfig);
 	var validVenus = evaluator.IsTrueIn(rule, marsConfig);
 	
-#### Returns:
+**Returns:**
 --------------
 	validEarth = true;  *(because the sky is blue in this world and the planet's name is Earth)*
 	validMars  = false; *(because the sky is blue in this world but the planets name is Mars)*
 	validVenus = true;  *(because the sky is not blue)*
 
-#### Explanation
+**Explanation**
 ----------------
 World1(Earth) will return true, and World2(Mars) will return false.
 This is because according to our rule, the planet must be Earth if the sky is blue,
