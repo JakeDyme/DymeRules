@@ -30,9 +30,9 @@ Create some rules about Json objects, and then use the rules to validate a set o
 	
 #### Returns:
 ---
-validEarth is true
-validMars is false
-validVenus is true
+validEarth = true;
+validMars = false;
+validVenus = true;
 
 #### Explanation
 ---
