@@ -11,21 +11,33 @@ Create some rules about Json objects, and then use the rules to validate a set o
 
 ## Using library "JsonEasyRules"
 	
-#### Example rules:
+#### Example rules: (in Easy-Rule syntax)
 ---
-	Rule: 		"if (sky) is (blue) then (planet) is (Earth)"
+	rule =	"if (sky) is (blue) then (planet) is (Earth)"
 
-#### Example world (Json objects):
+#### Example worlds (Json objects):
 ---
-	Config1:	{ "planet": "Earth", "sky": "blue" }
-	Config2:	{ "planet": "Mars",  "sky": "blue" }
+	earthConfig =	{ "planet": "Earth", "sky": "blue" }
+	marsConfig  =	{ "planet": "Mars",  **"sky": "blue"** }
 
+#### Example usage:
+---
+	var evaluator = JsonEasyRuleEvaluator.CreateEvaluator();
+	var validEarth = evaluator.IsTrueIn(rule, earthConfig);
+	var validMars = evaluator.IsTrueIn(rule, marsConfig);
+#### Returns:
+---
+validEarth is true
+validMars is **false**
+
+**Explanation**
 World1(Earth) will return true, and World2(Mars) will return false.
 This is because according to our rule, the planet must be Earth if the sky is blue,
 therefore World2 fails because the sky is blue, but the planet is Mars.
 If these were two actual configs, then there would be something wrong with config 2.
 
-The knowledge that Mars's sky is not blue, is existential knowledge that your system doesn't know about.
+**Conclusion**
+The knowledge that Mars's sky is not blue, is knowledge that your system doesn't know about, but you know about it.
 Having a rule is a way of encoding that knowledge. 
 Running the rule engine over your configs when you do a deployment allows you to automatically ensure that those types of defects don't make their way into your live environment.
 
