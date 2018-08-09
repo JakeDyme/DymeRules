@@ -13,32 +13,35 @@ Create some rules about Json objects, and then use the rules to validate a set o
 	
 #### Example rules: (in Easy-Rule syntax)
 ---
-	var rule =	"if (sky) is (blue) then (planet) is (Earth)";
+	var skyColorRule =	"if (sky) is (blue) then (planet) is (Earth)";
 
 #### Example worlds (Json objects):
 ---
-	var earthConfig = "{ 'planet': 'Earth', 'sky': 'blue' }";
-	var marsConfig  = "{ 'planet': 'Mars',  'sky': 'blue' }";
-	var venusConfig = "{ 'planet': 'Venus', 'sky': 'orange' }";
+	var earthWorld = "{ 'sky': 'blue',   'planet': 'Earth' }";
+	var marsWorld  = "{ 'sky': 'blue',   'planet': 'Mars' }";
+	var venusWorld = "{ 'sky': 'orange', 'planet': 'Venus' }";
 
-#### Example usage:
+#### Example usage (in C#):
 ---
-	var evaluator = JsonEasyRuleEvaluator.CreateEvaluator();
-	var validEarth = evaluator.IsTrueIn(rule, earthConfig);
-	var validMars  = evaluator.IsTrueIn(rule, marsConfig);
-	var validVenus = evaluator.IsTrueIn(rule, marsConfig);
+_// Create evaluator service..._
 	
-**Returns:**
---------------
-	validEarth = true;  *(because the sky is blue in this world and the planet's name is Earth)*
-	validMars  = false; *(because the sky is blue in this world but the planets name is Mars)*
-	validVenus = true;  *(because the sky is not blue)*
+	var evaluator = JsonEasyRuleEvaluator.CreateEvaluator();
+_// Evaluate rule against each config..._
 
-**Explanation**
-----------------
-World1(Earth) will return true, and World2(Mars) will return false.
-This is because according to our rule, the planet must be Earth if the sky is blue,
-therefore World2 fails because the sky is blue, but the planet is Mars.
+	var validEarth = evaluator.IsTrueIn(skyColorRule, earthWorld );
+	var validMars  = evaluator.IsTrueIn(skyColorRule, marsWorld  );
+	var validVenus = evaluator.IsTrueIn(skyColorRule, venusWorld );
+	
+#### Returns:
+---
+validEarth = true  *(because the sky is blue in this world and the planet's name is Earth)*
+validMars  = **false** *(because the sky is blue in this world but the planet's name is Mars, whaaat?)*
+validVenus = true  *(because the sky is not blue)*
+
+#### Explanation
+---
+marsWorld returns false because according to our rule, the planet **must** be Earth if the *sky is blue*,
+therefore marsWorld fails because the sky is blue, but the planet is Mars.
 If these were two actual configs, then there would be something wrong with config 2.
 Venus evaluates to true because the sky is orange, so immediately the rule says that this config is fine because the rule simply doesn't apply to this world. 
 
