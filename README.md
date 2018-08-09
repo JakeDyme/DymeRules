@@ -68,9 +68,13 @@ Running the rule engine over your configs when you do a deployment allows you to
 
 - `IF ($.Manufacturers[?(@.Name == 'Acme Co')].Products[0].Name) IS (Anvil)`
   <br />`THEN ($.Manufacturers[?(@.Name == 'Acme Co')].Products[0].Price) IS (50)")`
+returns true
 
-- `if ($.Stores[0]) IS (Lambton Quay) `
-  <br />`then ($.Manufacturers[0].Products[0].Price) is greater than (49.36) AND ($.Manufacturers[0].Products[0].Price) is less than (51)")`
+- `if ($.Stores[0])`
+  <br />`IS (Lambton Quay)`
+  <br />`then ($.Manufacturers[0].Products[0].Price) is greater than (49.36)` 
+  <br />`AND ($.Manufacturers[0].Products[0].Price) is less than (51)")`
+returns true
 
 ## Easy-Rule syntax
 ---
