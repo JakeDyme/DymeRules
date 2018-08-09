@@ -63,7 +63,7 @@ Running the rule engine over your configs when you do a deployment allows you to
 		}
 	]
 }
-<code><pre>
+</code></pre>
 #### Example Rules (using Json-Path as attribute names)
 
 - `IF ($.Manufacturers[?(@.Name == 'Acme Co')].Products[0].Name) IS (Anvil)`
