@@ -32,40 +32,45 @@ Running the rule engine over your configs when you do a deployment allows you to
 ## Using JSON-Path.
 ---
 #### Sample Json
-`{
-              'Stores': [
-                'Lambton Quay',
-                'Willis Street'
-              ],
-              'Manufacturers': [
-                {
-                  'Name': 'Acme Co',
-                  'Products': [
-                    {
-                      'Name': 'Anvil',
-                      'Price': 50
-                    }
-                  ]
-                },
-                {
-                  'Name': 'Contoso',
-                  'Products': [
-                    {
-                      'Name': 'Elbow Grease',
-                      'Price': 99.95
-                    },
-                    {
-                      'Name': 'Headlight Fluid',
-                      'Price': 4
-                    }
-                  ]
-                }
-              ]
-            }`
+<pre><code>
+{
+	'Stores': [
+	'Lambton Quay',
+	'Willis Street'
+	],
+	'Manufacturers': [
+		{
+		  'Name': 'Acme Co',
+		  'Products': [
+		    {
+		      'Name': 'Anvil',
+		      'Price': 50
+		    }
+		  ]
+		},
+		{
+		  'Name': 'Contoso',
+		  'Products': [
+		    {
+		      'Name': 'Elbow Grease',
+		      'Price': 99.95
+		    },
+		    {
+		      'Name': 'Headlight Fluid',
+		      'Price': 4
+		    }
+		  ]
+		}
+	]
+}
+<code><pre>
 #### Example Rules (using Json-Path as attribute names)
-if ($.store.book[*].author) contains ("Nigel Rees") then ($.store.book[*].author) contains ("Nigel Rees")
-IF ($.Manufacturers[?(@.Name == 'Acme Co')].Products[0].Name) IS (Anvil) THEN ($.Manufacturers[?(@.Name == 'Acme Co')].Products[0].Price) IS (50)")
-if ($.Stores[0]) IS (Lambton Quay) then ($.Manufacturers[0].Products[0].Price) is greater than (49.36) AND ($.Manufacturers[0].Products[0].Price) is less than (51)")
+
+- `IF ($.Manufacturers[?(@.Name == 'Acme Co')].Products[0].Name) IS (Anvil)`
+  `THEN ($.Manufacturers[?(@.Name == 'Acme Co')].Products[0].Price) IS (50)")`
+
+- `if ($.Stores[0]) IS (Lambton Quay) `
+  `then ($.Manufacturers[0].Products[0].Price) is greater than (49.36) AND ($.Manufacturers[0].Products[0].Price) is less than (51)")`
 
 ## Easy-Rule syntax
 ---
