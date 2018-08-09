@@ -1,13 +1,27 @@
 # DymeRules
 
 #### What is it: 
-A collection of tools for inference and rule building.
+- A collection of tools for inference and rule building.
+- A set of C# libraries, available on Nuget.
 
 #### Where or when should I use it? 
-Validate configuration files. Find hidden relationships between data.
+- Validate configuration files. (*JsonEasyRules*, *DymeInferenceEngine*).
+- Find relationships between data sets. (*JsonEasyRules*, *DymeFluentAdapter*, *DymeRuleEngine*)
+
+##### Usage Scenarios:
+- I want to build logical rules in C# and validate C# Dictionaries. 
+	*DymeRuleEngine* to build rules.
+	*DymeFluentAdapter* to make rule building easier.
+- I want to to infer rules from multiple C# Dictionaries.
+	*DymeRuleEngine* to build rules.
+	*DymeFluentAdapter* to make rule building easier.
+	*DymeInferenceEngine* to infer rules from multiple dictionaries.
+- I want to build rules for Json objects and infer rules from multiple Json objects.
+	*JsonEasyRules* to build rules using the Easy-Rule syntax, and infer rules into Easy-Rule syntax.
 
 #### How do I use it? 
 Create some rules about Json objects, and then use the rules to validate a set of Json objects.
+Download Nuget package: *JsonEasyRule*.
 
 ## Using library "JsonEasyRules"
 	
