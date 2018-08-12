@@ -48,9 +48,9 @@ _// Evaluate rule against each config..._
 	
 #### Returns:
 ---
-validEarth = true  *(because the sky is blue in this world and the planet's name is Earth)*
-validMars  = **false** *(because the sky is blue in this world but the planet's name is Mars, whaaat?)*
-validVenus = true  *(because the sky is not blue)*
+- validEarth = true  *(because the sky is blue in this world and the planet's name is Earth)*
+- validMars  = **false** *(because the sky is blue in this world but the planet's name is Mars, whaaat?)*
+- validVenus = true  *(because the sky is not blue)*
 
 #### Explanation
 ---
