@@ -5,8 +5,8 @@
 - A set of C# libraries, available on Nuget.
 
 #### Where or when should I use it? 
-- Validate configuration files. (*JsonEasyRules*, *DymeInferenceEngine*).
-- Find relationships between data sets. (*JsonEasyRules*, *DymeFluentAdapter*, *DymeRuleEngine*)
+- Validate configuration files. (*JsonEasyRules*, *DymeFluentAdapter*, *DymeRuleEngine*)
+- Find relationships between data sets. (*JsonEasyRules*, *DymeInferenceEngine*)
 
 ##### Usage Scenarios:
 - I want to build logical rules in C# and validate C# Dictionaries. 
