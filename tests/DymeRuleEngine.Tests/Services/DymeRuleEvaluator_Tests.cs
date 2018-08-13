@@ -51,7 +51,7 @@ namespace Tests
 		}
 
 		[TestCase("IF (weather) IS (sunny) THEN (destination) IS (beach)", "weather:sunny, destination:beach", true)]
-		[TestCase("IF (weather) IS (sunny) THEN (destination) IS (beach) OR (destination) IS (shop)", "weather:sunny, destination:beach", true)]
+        [TestCase("IF (weather) IS (sunny) THEN (destination) IS (beach) OR (destination) IS (shop)", "weather:sunny, destination:beach", true)]
 		[TestCase("IF (weather) IS (sunny) THEN (destination) IS (beach) OR (destination) IS (shop)", "weather:sunny, destination:shop", true)]
 		[TestCase("IF (weather) IS (sunny) THEN (destination) IS (beach) OR (destination) IS (shop)", "weather:sunny, destination:home", false)]
 		[TestCase("IF (weather) IS (sunny) THEN (destination) IS (beach)", "weather:sunny, destination:shop", false)]
@@ -76,6 +76,78 @@ namespace Tests
 			// Assert ...
 			Assert.AreEqual(expectedResult, result);
 		}
+
+        [TestCase("weather:sunny, destination:beach, wind:mild, sky:blue", true)]
+        public void ValidateRulesAgainstWorld_GivenComplexRuleAndWorld_ExpectPass(string inputWorld, bool inputResult)
+        {
+            // Arrange ...
+            var inputRule = @"IF ((weather) IS (sunny) AND (wind) IS (mild)) or ((weather) IS (sunny) AND (sky) IS (blue))
+                   THEN  (destination) IS (beach)";
+            var parser = new EasyRuleDymeRuleConverter();
+            var stateOfTheWorld = GetWorldFromFlatWorld(inputWorld);
+            var evaluatableRule = parser.ConvertEasyRuleToDymeRule(inputRule);
+            bool expectedResult = inputResult;
+
+            // Act ...
+            var result = sut.IsTrueIn(evaluatableRule, stateOfTheWorld);
+
+            // Assert ...
+            Assert.AreEqual(expectedResult, result);
+        }
+
+        [TestCase("weather:sunny, destination:beach, wind:mild, sky:blue", true)]
+        public void ValidateRulesAgainstWorld_GivenComplexRule2AndWorld_ExpectPass(string inputWorld, bool inputResult)
+        {
+            // Arrange ...
+            var inputRule = @"IF ((weather) IS (sunny) AND (wind) IS (mild)) OR ((sky) IS (blue))
+                            THEN  (destination) IS (beach)";
+            var parser = new EasyRuleDymeRuleConverter();
+            var stateOfTheWorld = GetWorldFromFlatWorld(inputWorld);
+            var evaluatableRule = parser.ConvertEasyRuleToDymeRule(inputRule);
+            bool expectedResult = inputResult;
+
+            // Act ...
+            var result = sut.IsTrueIn(evaluatableRule, stateOfTheWorld);
+
+            // Assert ...
+            Assert.AreEqual(expectedResult, result);
+        }
+
+        [TestCase("weather:sunny, destination:beach, wind:mild, sky:blue", true)]
+        public void ValidateRulesAgainstWorld_GivenComplexRule3AndWorld_ExpectPass(string inputWorld, bool inputResult)
+        {
+            // Arrange ...
+            var inputRule = @"IF (if (weather) is (sunny) then (wind) is (mild)) OR ((sky) is (blue) and (weather) is (sunny))
+                              THEN (destination) IS (beach)";
+            var parser = new EasyRuleDymeRuleConverter();
+            var stateOfTheWorld = GetWorldFromFlatWorld(inputWorld);
+            var evaluatableRule = parser.ConvertEasyRuleToDymeRule(inputRule);
+            bool expectedResult = inputResult;
+
+            // Act ...
+            var result = sut.IsTrueIn(evaluatableRule, stateOfTheWorld);
+
+            // Assert ...
+            Assert.AreEqual(expectedResult, result);
+        }
+
+        [TestCase("weather:sunny, destination:beach, wind:mild, sky:blue", true)]
+        public void ValidateRulesAgainstWorld_GivenSimpleRule1AndWorld_ExpectPass(string inputWorld, bool inputResult)
+        {
+            // Arrange ...
+            var inputRule = @"IF (weather) is (sunny) AND (sky) is (blue)
+                              THEN (destination) IS (beach)";
+            var parser = new EasyRuleDymeRuleConverter();
+            var stateOfTheWorld = GetWorldFromFlatWorld(inputWorld);
+            var evaluatableRule = parser.ConvertEasyRuleToDymeRule(inputRule);
+            bool expectedResult = inputResult;
+
+            // Act ...
+            var result = sut.IsTrueIn(evaluatableRule, stateOfTheWorld);
+
+            // Assert ...
+            Assert.AreEqual(expectedResult, result);
+        }
 
         [Test]
         public void ImplicationEquals_Given2EqualImplications_ExpectEqual()

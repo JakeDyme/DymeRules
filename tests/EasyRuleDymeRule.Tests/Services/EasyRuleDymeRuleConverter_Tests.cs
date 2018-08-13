@@ -68,17 +68,39 @@ namespace EasyRuleToDymeRules.Tests
         {
             // Arrange...
             var sut = new EasyRuleDymeRuleConverter();
-            var expectEasyRule = "IF (age) IS (18) OR (chest) IS (hairy) THEN (movie) IS (visible) AND (there) IS (boobs)";
+            var expectEasyRule = "IF (age) IS (10) OR (genre) IS (cartoon) THEN (movie) IS (visible) AND (there) NOT (violence)";
             var inputDymeRule =
                 If.When(Any.Of
-                    (ItsAFact.That("age").Is("18"))
+                    (ItsAFact.That("age").Is("10"))
                     .Or
-                    (ItsAFact.That("chest").Is("hairy"))
+                    (ItsAFact.That("genre").Is("cartoon"))
                     .IsTrue())
                   .Then(All.Of
                     (ItsAFact.That("movie").Is("visible"))
                     .And
-                    (ItsAFact.That("there").Is("boobs"))
+                    (ItsAFact.That("there").IsNot("violence"))
+                    .IsTrue());
+            // Act...
+            var result = sut.ConvertDymeRuleToEasyRule(inputDymeRule);
+            Assert.AreEqual(expectEasyRule, result);
+        }
+
+        [Test]
+        public void EasyRuleDymeParser_GivenNestedDymeRules_ExpectEasyRules()
+        {
+            // Arrange...
+            var sut = new EasyRuleDymeRuleConverter();
+            var expectEasyRule = "IF (age) GREATER THAN (18) OR ((age) LESS THAN (100) AND (date) IN (2000/01/01)) THEN (movie) IS (visible) AND (warnings) CONTAINS (violence)";
+            var inputDymeRule =
+                If.When(Any.Of
+                    (ItsAFact.That("age").IsGreaterThan("18"))
+                    .Or
+                    (All.Of(ItsAFact.That("age").IsLessThan("100")).And(ItsAFact.That("date").IsIn("2000/01/01")).IsTrue() )
+                    .IsTrue())
+                  .Then(All.Of
+                    (ItsAFact.That("movie").Is("visible"))
+                    .And
+                    (ItsAFact.That("warnings").Contains("violence"))
                     .IsTrue());
             // Act...
             var result = sut.ConvertDymeRuleToEasyRule(inputDymeRule);

@@ -27,7 +27,8 @@ namespace JsonEasyRulesTests
             Assert.AreEqual(expectedRules, result);
         }
 
-
+        [TestCase(@"IF (Stores[1]) IS (Willis Street) THEN (Manufacturers[0].Products[0].Price) IS (50)")]
+        [TestCase(@"IF (Stores[1]) IS (Willis Street) THEN (Manufacturers[0].Products[0].Price) IS (51)", false)]
         [TestCase(@"IF ($.Manufacturers[?(@.Name == 'Acme Co')].Products[0].Name) IS (Anvil) THEN ($.Manufacturers[?(@.Name == 'Acme Co')].Products[0].Price) IS (50)")]
         [TestCase(@"IF ($.Manufacturers[?(@.Name == 'Acme Co')].Products[0].Name) IS (Anvil) 
                    THEN ($.Manufacturers[?(@.Name == 'Acme Co')].Products[0].Price) IS (50)")]
@@ -35,7 +36,7 @@ namespace JsonEasyRulesTests
                    THEN ($.Manufacturers[?(@.Name == 'Acme Co')].Products[0].Price) IS   (50)")]
         [TestCase(@"IF ($.Stores[0]) IS (Lambton Quay) THEN ($.Manufacturers[0].Name) IS NOT (Fireworks)")]
         [TestCase(@"if ($.Stores[0]) IS (Lambton Quay) then ($.Manufacturers[0].Products[0].Price) is greater than (49.36) AND ($.Manufacturers[0].Products[0].Price) is less than (51)")]
-        public void IsTrueIn_GivenJsonObjectsAndEasyRule_ValidReturn(string easyRule)
+        public void IsTrueIn_GivenJsonObjectsAndEasyRule_ValidReturn(string easyRule, bool expectedResult = true)
         {
             // Arrange...
             var jsonWorld = @"{
@@ -68,8 +69,6 @@ namespace JsonEasyRulesTests
                 }
               ]
             }";
-
-            var expectedResult = true;
 
             var sut = JsonEasyRuleEvaluator.CreateEvaluator();
             // Act...
