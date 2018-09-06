@@ -1,4 +1,4 @@
-﻿using DymeInferenceEngine.Services;
+using DymeInferenceEngine.Services;
 using EasyRuleDymeRule.Services;
 using DymeRuleEngine.Contracts;
 using DymeRuleEngine.Services;
@@ -19,10 +19,37 @@ namespace JsonToEasyRules.Services
         IWorldReader _worldReader;
         IWorldAnalyser _worldAnalyser;
 
+        #region Static convenience methods
+        public static IEnumerable<string> ReturnFailingRules(string jsonObject, IEnumerable<string> easyRules) {
+            var evaluator = new JsonEasyRuleEvaluator();
+            return evaluator.GetFailingRules(jsonObject, easyRules);
+        }
+
+        public static IEnumerable<string> ReturnFailingWorlds(IEnumerable<string> jsonObjects, string easyRule)
+        {
+            var evaluator = new JsonEasyRuleEvaluator();
+            return evaluator.GetFailingWorlds(jsonObjects, easyRule);
+        }
+
+        public static bool ReturnIsTrueIn(string easyRule, string jsonWorld)
+        {
+            var evaluator = new JsonEasyRuleEvaluator();
+            return evaluator.IsTrueIn(easyRule, jsonWorld);
+        }
+
+        public static IEnumerable<string> ReturnInferredEasyRules(IEnumerable<string> jsonObjects, InferenceType inferenceType = InferenceType.Pessimistic)
+        {
+            var evaluator = new JsonEasyRuleEvaluator();
+            return evaluator.InferEasyRules(jsonObjects, inferenceType);
+        }
+        #endregion
+
+        #region Instance factory
         public static JsonEasyRuleEvaluator CreateEvaluator()
         {
             return new JsonEasyRuleEvaluator();
         }
+        #endregion
 
         private JsonEasyRuleEvaluator(IMetricService metricService = null)
         {
