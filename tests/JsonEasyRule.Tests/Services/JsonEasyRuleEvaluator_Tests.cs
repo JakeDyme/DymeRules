@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using JsonToEasyRules.Services;
+using JsonEasyRule.Services;
 using System.Collections.Generic;
 
 namespace JsonEasyRulesTests

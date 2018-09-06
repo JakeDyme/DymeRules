@@ -1,4 +1,4 @@
-using DymeInferenceEngine.Services;
+﻿using DymeInferenceEngine.Services;
 using EasyRuleDymeRule.Services;
 using DymeRuleEngine.Contracts;
 using DymeRuleEngine.Services;
@@ -9,7 +9,7 @@ using JsonEasyRule.Contracts;
 using DymeInferenceEngine.Contracts;
 using JsonEasyRule.Models;
 
-namespace JsonToEasyRules.Services
+namespace JsonEasyRule.Services
 {
     public class JsonEasyRuleEvaluator
     {

@@ -1,9 +1,5 @@
-﻿using JsonToEasyRules.Services;
+﻿using JsonEasyRule.Services;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HelloWorld
 {
@@ -12,20 +8,16 @@ namespace HelloWorld
         static void Main(string[] args)
         {
             // ----------------- SETUP -----------------------------------------
-            // load Easy-Rules...
+            // create Easy-Rules...
             var rule = "if (sky) is (blue) then (planet) must be (Earth)";
             
-            // load configs...
+            // create configs...
             var config1 = "{ 'planet': 'Earth', 'sky': 'blue' }";
             var config2 = "{ 'planet': 'Mars',  'sky': 'blue' }";
 
-
             // ----------------- EXECUTION ------------------------------------
-            // Create rule engine...
-            var evaluator = JsonEasyRuleEvaluator.CreateEvaluator();
-            
             // Check configs against rule, return bad configs...
-            var failingConfigs = evaluator.GetFailingWorlds(new[] { config1, config2 }, rule);
+            var failingConfigs = JsonEasyRuleEvaluator.ReturnFailingWorlds(new[] { config1, config2 }, rule);
 
 
             // ----------------- REPORTING -------------------------------------

@@ -1,4 +1,4 @@
-﻿using JsonToEasyRules.Services;
+﻿using JsonEasyRule.Services;
 using System;
 
 
@@ -18,15 +18,12 @@ namespace SampleInference
 
 
             // ----------------- EXECUTION -------------------------------------
-            // Create rule engine...
-            var evaluator = JsonEasyRuleEvaluator.CreateEvaluator();
-
             // Infer some rules...
-            var newRules = evaluator.InferEasyRules(new[] { config1, config2, config3, config4, config5 });
+            var newRules = JsonEasyRuleEvaluator.ReturnInferredEasyRules(new[] { config1, config2, config3, config4, config5 });
 
 
             // ----------------- REPORTING -------------------------------------
-            // Output any bad configs...
+            // Output inferred rules...
             Console.WriteLine("The following rules were generated:");
             foreach (var rule in newRules) Console.WriteLine(rule);
             Console.ReadLine();
