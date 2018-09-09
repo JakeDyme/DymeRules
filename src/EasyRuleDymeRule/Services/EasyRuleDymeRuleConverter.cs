@@ -19,9 +19,11 @@ namespace EasyRuleDymeRule.Services
         const string _valClose = @")";
         const string _binaryArgOpen = @"(setting)";
         const string _binaryArgClose = @"";
-        readonly string _attributeSentence = $@"{Regex.Escape(_attOpen)}(.+){Regex.Escape(_attClose)}";
-        readonly string _valueSentence = $@"({Regex.Escape(_binaryArgOpen)})*{Regex.Escape(_valOpen)}(.+){Regex.Escape(_valClose)}{Regex.Escape(_binaryArgClose)}";
-        readonly Dictionary<string, Predicate> _operatorMapKeys = new Dictionary<string, Predicate>();
+
+        readonly Dictionary<string, Quantifier> _quantifierSynonyms = new Dictionary<string, Quantifier>();
+        readonly string _attributeSentence = $@"(#Quantifier#)*{Regex.Escape(_attOpen)}(.+){Regex.Escape(_attClose)}";
+        readonly string _valueSentence = $@"(#Quantifier#)*({Regex.Escape(_binaryArgOpen)})*{Regex.Escape(_valOpen)}(.+){Regex.Escape(_valClose)}{Regex.Escape(_binaryArgClose)}";
+        readonly Dictionary<string, Predicate> _operatorSynonyms = new Dictionary<string, Predicate>();
         readonly string _regexMatchFact_Template = $@"^{_s}*#AttributeSentence#{_s}+(#OperatorMapKeys#){_s}+#ValueSentence#{_s}*$";
         readonly string _regexMatchFact;
 
@@ -44,24 +46,55 @@ namespace EasyRuleDymeRule.Services
 
         public EasyRuleDymeRuleConverter()
         {
-            _operatorMapKeys.Add("IS", Predicate.IS);
-            _operatorMapKeys.Add("ARE", Predicate.IS);
-            _operatorMapKeys.Add("MUST BE", Predicate.IS);
-            _operatorMapKeys.Add("SHOULD BE", Predicate.IS);
-            _operatorMapKeys.Add("EQUALS", Predicate.IS);
-            _operatorMapKeys.Add("GREATER THAN", Predicate.GREATER_THAN);
-            _operatorMapKeys.Add("IS GREATER THAN", Predicate.GREATER_THAN);
-            _operatorMapKeys.Add("LESS THAN", Predicate.LESS_THAN);
-            _operatorMapKeys.Add("IS LESS THAN", Predicate.LESS_THAN);
-            _operatorMapKeys.Add("NOT", Predicate.NOT);
-            _operatorMapKeys.Add("IS NOT", Predicate.NOT);
-            _operatorMapKeys.Add("CONTAINS", Predicate.CONTAINS);
-            _operatorMapKeys.Add("IN", Predicate.IN);
+            _operatorSynonyms.Add("IS", Predicate.IS);
+            _operatorSynonyms.Add("ARE", Predicate.IS);
+            _operatorSynonyms.Add("MUST BE", Predicate.IS);
+            _operatorSynonyms.Add("SHOULD BE", Predicate.IS);
+            _operatorSynonyms.Add("EQUALS", Predicate.IS);
+            _operatorSynonyms.Add("IS EQUAL TO", Predicate.IS);
+
+            _operatorSynonyms.Add("GREATER THAN", Predicate.GREATER_THAN);
+            _operatorSynonyms.Add("IS GREATER THAN", Predicate.GREATER_THAN);
+
+            _operatorSynonyms.Add("LESS THAN", Predicate.LESS_THAN);
+            _operatorSynonyms.Add("IS LESS THAN", Predicate.LESS_THAN);
+
+            _operatorSynonyms.Add("NOT", Predicate.NOT);
+            _operatorSynonyms.Add("IS NOT", Predicate.NOT);
+
+            _operatorSynonyms.Add("CONTAINS", Predicate.CONTAINS);
+            _operatorSynonyms.Add("CONTAIN", Predicate.CONTAINS);
+
+            _operatorSynonyms.Add("PART OF", Predicate.PARTOF);
+            _operatorSynonyms.Add("IS PART OF", Predicate.PARTOF);
+
+            _quantifierSynonyms.Add("FOR ALL", Quantifier.ALL);
+            _quantifierSynonyms.Add("ALL", Quantifier.ALL);
+            _quantifierSynonyms.Add("ALL OF", Quantifier.ALL);
+            _quantifierSynonyms.Add("EACH", Quantifier.ALL);
+            _quantifierSynonyms.Add("EACH ONE OF", Quantifier.ALL);
+            _quantifierSynonyms.Add("EVERY", Quantifier.ALL);
+            _quantifierSynonyms.Add("EVERY ONE OF", Quantifier.ALL);
+
+            _quantifierSynonyms.Add("ANY", Quantifier.ANY);
+            _quantifierSynonyms.Add("ANY OF", Quantifier.ANY);
+            _quantifierSynonyms.Add("ANY ONE OF", Quantifier.ANY);
+            _quantifierSynonyms.Add("SOME", Quantifier.ANY);
+            _quantifierSynonyms.Add("SOME OF", Quantifier.ANY);
+            _quantifierSynonyms.Add("ONE OF", Quantifier.ANY);
+            _quantifierSynonyms.Add("THERE EXISTS", Quantifier.ANY);
+            _quantifierSynonyms.Add("WITHIN", Quantifier.ANY);
+            _quantifierSynonyms.Add("IN", Quantifier.ANY);
+
+            _quantifierSynonyms.Add("SINGLE", Quantifier.SINGLE);
+            _quantifierSynonyms.Add("ONLY ONE", Quantifier.SINGLE);
+            _quantifierSynonyms.Add("ONLY ONE OF", Quantifier.SINGLE);
 
             _regexMatchFact = _regexMatchFact_Template
-                .Replace("#OperatorMapKeys#", _operatorMapKeys.Select(m => m.Key).Aggregate((a, b) => $"{a}|{b}"))
+                .Replace("#OperatorMapKeys#", _operatorSynonyms.Select(m => m.Key).Aggregate((a, b) => $"{a}|{b}"))
                 .Replace("#AttributeSentence#", _attributeSentence)
-                .Replace("#ValueSentence#", _valueSentence);
+                .Replace("#ValueSentence#", _valueSentence)
+                .Replace("#Quantifier#", _quantifierSynonyms.Select(m => m.Key).Aggregate((a, b) => $"{a}|{b}"));
         }
         public IEvaluatable ConvertEasyRuleToDymeRule(string ruleString)
         {
@@ -121,7 +154,7 @@ namespace EasyRuleDymeRule.Services
         private string FactToEasyRuleFormat(IEvaluatable construct)
         {
             var fact = construct as Proposition;
-            var friendlyOperator = _operatorMapKeys.First(m => m.Value == fact.Operator).Key;
+            var friendlyOperator = _operatorSynonyms.First(m => m.Value == fact.Operator).Key;
             return $"{_attOpen}{fact.AttributeName}{_attClose} {friendlyOperator} {(fact.BinaryArgument? _binaryArgOpen:"")}{_valOpen}{fact.AttributeValue}{_valClose}{(fact.BinaryArgument ? _binaryArgClose : "")}";
         }
 
@@ -224,11 +257,13 @@ namespace EasyRuleDymeRule.Services
         {
             var pattern = new Regex(_regexMatchFact, RegexOptions.IgnoreCase);
             var matches = pattern.Matches(inputString);
-            var attributeName = DecompressStringFully(matches[0].Groups[2].Value);
-            Predicate relationalOperator = _operatorMapKeys[matches[0].Groups[4].Value.ToUpperInvariant()];
-            var reflective = !string.IsNullOrEmpty(matches[0].Groups[6].Value);
-            var attributeValue = DecompressStringFully(matches[0].Groups[7].Value);
-            return new Proposition(attributeName, relationalOperator, attributeValue, reflective);
+            Quantifier quantifier1 = string.IsNullOrEmpty(matches[0].Groups[2].Value) ? Quantifier.ALL: _quantifierSynonyms[matches[0].Groups[2].Value.ToUpperInvariant()];
+            var attributeName = DecompressStringFully(matches[0].Groups[3].Value);
+            Predicate relationalOperator = _operatorSynonyms[matches[0].Groups[5].Value.ToUpperInvariant()];
+            Quantifier quantifier2 = string.IsNullOrEmpty(matches[0].Groups[7].Value) ? quantifier1 : _quantifierSynonyms[matches[0].Groups[7].Value.ToUpperInvariant()];
+            var reflective = !string.IsNullOrEmpty(matches[0].Groups[8].Value);
+            var attributeValue = DecompressStringFully(matches[0].Groups[9].Value);
+            return new Proposition(attributeName, relationalOperator, attributeValue, reflective, quantifier1, quantifier2);
         }
 
         private bool IsEncapsulated(string inputString)

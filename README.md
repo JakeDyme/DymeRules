@@ -27,7 +27,7 @@ Download Nuget package: *JsonEasyRule*.
 	
 #### Example rules: (in Easy-Rule syntax)
 ---
-	var skyColorRule =	"if (sky) is (blue) then (planet) is (Earth)";
+	var skyColorRule = "if (sky) is (blue) then (planet) is (Earth)";
 
 #### Example worlds (Json objects):
 ---
@@ -35,27 +35,22 @@ Download Nuget package: *JsonEasyRule*.
 	var marsWorld  = "{ 'sky': 'blue',   'planet': 'Mars' }";
 	var venusWorld = "{ 'sky': 'orange', 'planet': 'Venus' }";
 
-#### Example usage (in C#):
+#### Evaluate rules against configs:
 ---
-_// Create evaluator service..._
-	
-	var evaluator = JsonEasyRuleEvaluator.CreateEvaluator();
-_// Evaluate rule against each config..._
-
-	var validEarth = evaluator.IsTrueIn(skyColorRule, earthWorld );
-	var validMars  = evaluator.IsTrueIn(skyColorRule, marsWorld  );
-	var validVenus = evaluator.IsTrueIn(skyColorRule, venusWorld );
+	var earthIsValidWorld = JsonEasyRuleEvaluator.ReturnIsTrueIn(skyColorRule, earthWorld );
+	var marsIsValidWorld  = JsonEasyRuleEvaluator.ReturnIsTrueIn(skyColorRule, marsWorld  );
+	var venusIsValidWorld = JsonEasyRuleEvaluator.ReturnIsTrueIn(skyColorRule, venusWorld );
 	
 #### Returns:
 ---
-- validEarth = true  *(because the sky is blue in this world and the planet's name is Earth)*
-- validMars  = **false** *(because the sky is blue in this world but the planet's name is Mars, whaaat?)*
-- validVenus = true  *(because the sky is not blue)*
+- earthIsValidWorld = true  *(because the sky is blue in this world and the planet's name is Earth)*
+- marsIsValidWorld  = **false** *(because the sky is **blue** in this world but the planet's name is **Mars**, whaaat?)*
+- venusIsValidWorld = true  *(because the sky is not blue)*
 
 #### Explanation
 ---
-marsWorld returns false because according to our rule, the planet **must** be Earth if the *sky is blue*,
-therefore marsWorld fails because the sky is blue, but the planet is Mars.
+marsIsValidWorld returns false because according to our rule, the planet **must** be Earth if the *sky is blue*,
+therefore marsIsValidWorld fails because the sky is blue, but the planet is Mars.
 If these were two actual configs, then there would be something wrong with config 2.
 Venus evaluates to true because the sky is orange, so immediately the rule says that this config is fine because the rule simply doesn't apply to this world. 
 
@@ -144,16 +139,32 @@ EXAMPLES OF EASY RULES:
 - `(SKY_COLOR) contains (blu)`
 - `(PLANET_AGE) greater than (2000000)`
 - `(PLANET_AGE) less than (setting)(SUN_AGE)`
+- `any of(PLANETS) is (Earth)`
+- `some(PLANETS) are (SOLAR_SYSTEM_PLANETS)`
 #### Formats (comparing settings to values, or settings to other settings) :
 - unary comparison:  `([key])` `operator` `([value])`
 - binary comparison: ([key1]) operator `(setting)`([key2])
+
 #### Comparers:
-- equality: `is` | `must be`
+- equality: `is` | `are` | `must be` | `should be` | `equals` | `is equal to` 
 - negation: `not` | `is not`
 - inequality: `greater than` | `is greater than` | `less than` | `is less than`
 - superset: `contains`
 - subset: `in`
 
+#### Quantification:
+- Universal: `all` | `all of` | `for all` | `each` | `each one of` | `every`|  `every one of`
+- Existential: `any` | `any of` | `any one of` | `one of` | `some` | `some of` | `there exists` | `in` | `within`
+- Exclusive: `single` | `only one` | `only one of`
+
+*Notes on quantification:*
+- Quantifier must lie directly next to the attribute or value (no spaces between the quantifier and the attribute/value)
+- If no quantification is specified for the **attribute** then 'universal' quantification is used by default.
+- If no quantification is specified for the **value** then 'existential' quantification is used by default.
+	- `some(PLANETS) are (SOLAR_SYSTEM_PLANETS)` is equivalent to `some(PLANETS) are some(SOLAR_SYSTEM_PLANETS)` 1 or more one one side can match 1 or more on the other side.
+	- `(SOLAR_SYSTEM_PLANETS) are (NEAR_PLANETS)` is equivalent to `all(SOLAR_SYSTEM_PLANETS) are some(NEAR_PLANETS)` all on one side must match all on the other side
+	- `only one of(SOLAR_SYSTEM_PLANETS) are (HABITAL_PLANETS)` is equivalent to `only one of(SOLAR_SYSTEM_PLANETS) are within(HABITAL_PLANETS)` 
+ 
 ### Implication
 ----------------
 - `if (PLANET) is (Earth) then (sky) is (blue)`

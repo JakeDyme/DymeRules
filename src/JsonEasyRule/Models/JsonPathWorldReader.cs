@@ -1,12 +1,13 @@
 ﻿using DymeRuleEngine.Contracts;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 
 namespace JsonEasyRule.Models
 {
     public class JsonPathWorldReader : IWorldReader
     {
-        public string GetValueFromWorld<WorldType>(string queryString, WorldType world)
+        public IEnumerable<string> GetValueFromWorld<WorldType>(string queryString, WorldType world)
         {
             JObject worldAsType = null;
 
@@ -16,7 +17,12 @@ namespace JsonEasyRule.Models
                 worldAsType = JObject.Parse(world as string);
             else
                 throw new Exception("Unknown world type, must be string or JObject");
-            return worldAsType.SelectToken(queryString).ToString();
+            var resultToken = worldAsType.SelectToken(queryString);
+            
+            if (resultToken.Type == JTokenType.Array)
+                return resultToken.Values<string>();
+
+            return new[] { resultToken.ToString() };
         }
     }
 }

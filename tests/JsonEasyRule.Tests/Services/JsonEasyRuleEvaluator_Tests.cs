@@ -27,6 +27,19 @@ namespace JsonEasyRulesTests
             Assert.AreEqual(expectedRules, result);
         }
 
+        [TestCase(@"IF (Stores[1]) IS (Willis Street) THEN SOME(Prices) are (Setting)(Buyers)", false)]
+        [TestCase(@"IF (Stores[1]) IS (Willis Street) THEN ALL(Buyers) are (Setting)(Owners)", false)]
+        [TestCase(@"IF (Stores[1]) IS (Willis Street) THEN SOME(Buyers) are (Setting)(Owners)")]
+        [TestCase(@"IF (Stores[1]) IS (Willis Street) THEN ONLY ONE OF(Buyers) are (Setting)(Owners)")]
+        [TestCase(@"IF (Stores[1]) IS (Willis Street) THEN SOME(Buyers) are SOME(Setting)(Owners)")]
+        [TestCase(@"IF (Stores[1]) IS (Willis Street) THEN SOME OF(Prices) is (Setting)(MaxPrice)")]
+        [TestCase(@"IF (Stores[1]) IS (Willis Street) THEN ONLY ONE(Prices) is (Setting)(MaxPrice)", false)]
+        [TestCase(@"IF (Stores[1]) IS (Willis Street) THEN ONLY ONE OF(Buyers) is (Setting)(Seller)")]
+        [TestCase(@"IF (Stores[1]) IS (Willis Street) THEN SINGLE(Buyers) is (Setting)(Seller)")]
+        [TestCase(@"IF (Stores[1]) IS (Willis Street) THEN ANY(Buyers) is (Setting)(Seller)")]
+        [TestCase(@"IF (Stores[1]) IS (Willis Street) THEN ALL(Buyers) is (Setting)(Seller)", false) ]
+        [TestCase(@"IF (Stores[1]) IS (Willis Street) THEN (Prices) is (Setting)(Prices)")]
+        [TestCase(@"IF (Stores[1]) IS (Willis Street) THEN (Prices[0]) is (Setting)(Prices[0])")]
         [TestCase(@"IF (Stores[1]) IS (Willis Street) THEN (Manufacturers[0].Products[0].Price) IS (50)")]
         [TestCase(@"IF (Stores[1]) IS (Willis Street) THEN (Manufacturers[0].Products[0].Price) IS (51)", false)]
         [TestCase(@"IF ($.Manufacturers[?(@.Name == 'Acme Co')].Products[0].Name) IS (Anvil) THEN ($.Manufacturers[?(@.Name == 'Acme Co')].Products[0].Price) IS (50)")]
@@ -43,6 +56,20 @@ namespace JsonEasyRulesTests
               'Stores': [
                 'Lambton Quay',
                 'Willis Street'
+              ],
+              'Prices': [
+                10,
+                10
+              ],
+              'MaxPrice': 10,
+              'Buyers': [
+                'John',
+                'Sam'
+              ],
+              'Seller': 'John',
+              'Owners': [
+                'Sam',
+                'Steve'
               ],
               'Manufacturers': [
                 {

@@ -127,7 +127,7 @@ namespace DymeInferenceEngine.Services
 
         private Proposition CreateUnaryFactFromAttribute<WorldType>(WorldType world, string attributeKey)
         {
-            return new Proposition(attributeKey, Predicate.IS, _worldReader.GetValueFromWorld(attributeKey, world));
+            return new Proposition(attributeKey, Predicate.IS, _worldReader.GetValueFromWorld(attributeKey, world).Single());
         }
 
         private IEnumerable<Tuple<string, string>> CreateAttributeCombinations(IEnumerable<string> attNames)

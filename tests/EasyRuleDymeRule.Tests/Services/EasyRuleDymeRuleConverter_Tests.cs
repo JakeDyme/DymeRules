@@ -90,7 +90,7 @@ namespace EasyRuleToDymeRules.Tests
         {
             // Arrange...
             var sut = new EasyRuleDymeRuleConverter();
-            var expectEasyRule = "IF (age) GREATER THAN (18) OR ((age) LESS THAN (100) AND (date) IN (2000/01/01)) THEN (movie) IS (visible) AND (warnings) CONTAINS (violence)";
+            var expectEasyRule = "IF (age) GREATER THAN (18) OR ((age) LESS THAN (100) AND (date) PART OF (2000/01/01)) THEN (movie) IS (visible) AND (warnings) CONTAINS (violence)";
             var inputDymeRule =
                 If.When(Any.Of
                     (ItsAFact.That("age").IsGreaterThan("18"))

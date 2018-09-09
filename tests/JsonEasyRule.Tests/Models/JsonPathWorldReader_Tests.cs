@@ -1,5 +1,6 @@
 ﻿using JsonEasyRule.Models;
 using NUnit.Framework;
+using System.Linq;
 
 namespace JsonEasyRule.Tests.Models
 {
@@ -16,7 +17,7 @@ namespace JsonEasyRule.Tests.Models
             var result = sut.GetValueFromWorld(query, jsonWorld);
 
             // Assert
-            Assert.AreEqual(result, expected);
+            Assert.AreEqual(result.Single(), expected);
         }
         
     }

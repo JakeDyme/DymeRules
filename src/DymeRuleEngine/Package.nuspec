@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>DymeRuleEngine</id>
-    <version>2.0.5</version>
+    <version>2.0.6</version>
     <authors>Jake Dyme</authors>
     <owners>Jake Dyme</owners>
 	<licenseUrl>http://opensource.org/licenses/MS-PL</licenseUrl>
@@ -10,7 +10,7 @@
     <iconUrl>https://raw.githubusercontent.com/JakeDyme/DymeRules/master/bushbaby.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A simple rule engine</description>
-    <releaseNotes>Initial release</releaseNotes>
+    <releaseNotes>Now includes quantification</releaseNotes>
     <copyright>Copyright 2018</copyright>
     <tags>Rule RuleEngine</tags>
     <dependencies>

@@ -10,8 +10,6 @@ namespace DymeRuleEngine.Models
     [DebuggerDisplay("{ToString()}")]
     public class Proposition : IEvaluatable
     {
-        //private IMetricsService _metricsService;
-        //public IAttributeProperties attributeProperties { get; set; }
         public string AttributeName { get; set; }
         public Predicate Operator { get; set; }
         public string AttributeValue { get; set; }
@@ -20,51 +18,25 @@ namespace DymeRuleEngine.Models
         /// If this property is set to true, then the attribute will automatically use the AttributeValue field as the name of the second attribute, and fetch that attribute's value from the world for comparison.
         /// </summary>
         public bool BinaryArgument { get; set; } = false;
+        public Quantifier Argument1Quantifier { get; set; } = Quantifier.ALL;
+        public Quantifier Argument2Quantifier { get; set; } = Quantifier.ALL;
 
         public Proposition() { }
-        public Proposition(string attributeName, Predicate operation, string attributeValue, bool BinaryArgument = false)
+        public Proposition(
+            string attributeName, 
+            Predicate operation, 
+            string attributeValue, 
+            bool binaryArgument = false, 
+            Quantifier argument1Quantifier = Quantifier.ALL,
+            Quantifier argument2Quantifier = Quantifier.ALL)
         {
             AttributeName = attributeName;
             Operator = operation;
             AttributeValue = attributeValue;
-            this.BinaryArgument = BinaryArgument;
+            BinaryArgument = binaryArgument;
+            Argument1Quantifier = argument1Quantifier;
+            Argument2Quantifier = argument2Quantifier;
         }
-
-
-
-        //public bool Evaluate(Dictionary<string, string> world)
-        //{
-        //    //if (!AttributeExistsInWorld(world, Key)) return true;
-        //    var expectedValue = GetValueFromWorld(world, AttributeName);
-        //    string actualValue = BinaryArgument ? GetValueFromWorld(world, AttributeValue) : AttributeValue;
-
-        //    //_metricsService.IncrementMetric("Rule.Fact.Evaluate", String.Concat("world", AttributeName));
-        //    if (Operator == Predicate.IS)
-        //        return (expectedValue == actualValue);
-        //    if (Operator == Predicate.NOT)
-        //        return (expectedValue != actualValue);
-        //    if (Operator == Predicate.GREATER_THAN)
-        //        return (Convert.ToDouble(expectedValue) > Convert.ToDouble(actualValue));
-        //    if (Operator == Predicate.LESS_THAN)
-        //        return (Convert.ToDouble(expectedValue) < Convert.ToDouble(actualValue));
-        //    if (Operator == Predicate.CONTAINS)
-        //        return (expectedValue.IndexOf(actualValue) > -1);
-        //    if (Operator == Predicate.IN)
-        //        return (actualValue.IndexOf(expectedValue) > -1);
-        //    throw new Exception("Unexpected relational operator");
-        //}
-
-        //private bool AttributeExistsInWorld(Dictionary<string, string> world, string attributeName)
-        //{
-        //    //_metricsService.IncrementMetric("Rule.Fact.WorldLookup", attributeName);
-        //    return world.ContainsKey(attributeName);
-        //}
-
-        //private string GetValueFromWorld(Dictionary<string, string> world, string attributeName)
-        //{
-        //    //_metricsService.IncrementMetric("Rule.Fact.WorldLookup", attributeName);
-        //    return world[attributeName];
-        //}
 
         public override bool Equals(object obj)
         {

@@ -9,9 +9,9 @@ namespace DymeRuleEngine.Services
 {
     public class DictionaryWorldReader : IWorldReader
     {
-        public string GetValueFromWorld<WorldType>(string queryString, WorldType world)
+        public IEnumerable<string> GetValueFromWorld<WorldType>(string queryString, WorldType world)
         {
-            return WorldAsDictionary(world)[queryString];
+            return new[] { WorldAsDictionary(world)[queryString] };
         }
 
         private Dictionary<string, string> WorldAsDictionary<WorldType>(WorldType world)

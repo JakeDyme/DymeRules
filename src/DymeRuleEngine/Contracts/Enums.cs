@@ -8,7 +8,12 @@ namespace DymeRuleEngine.Contracts
 
     public enum Predicate
     {
-        IS, NOT, GREATER_THAN, LESS_THAN, CONTAINS, IN
+        IS, NOT, GREATER_THAN, LESS_THAN, CONTAINS, PARTOF
+    }
+
+    public enum Quantifier
+    {
+        ALL, ANY, SINGLE
     }
 
     public enum Junction

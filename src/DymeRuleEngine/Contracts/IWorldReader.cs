@@ -5,6 +5,6 @@ namespace DymeRuleEngine.Contracts
 {
     public interface IWorldReader
     {
-        string GetValueFromWorld<WorldType>(string queryString, WorldType world);
+        IEnumerable<string> GetValueFromWorld<WorldType>(string queryString, WorldType world);
     }
 }

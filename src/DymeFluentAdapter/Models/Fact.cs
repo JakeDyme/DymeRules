@@ -57,7 +57,7 @@ namespace DymeFluentSyntax.Models
         public IEvaluatable IsIn(string value)
         {
             _state.AttributeValue = value;
-            _state.Operator = Predicate.IN;
+            _state.Operator = Predicate.PARTOF;
             return AsEvaluatable();
         }
     }
