@@ -161,9 +161,9 @@ EXAMPLES OF EASY RULES:
 - Quantifier must lie directly next to the attribute or value (no spaces between the quantifier and the attribute/value)
 - If no quantification is specified for the **attribute** then 'universal' quantification is used by default.
 - If no quantification is specified for the **value** then 'existential' quantification is used by default.
-	- `some(PLANETS) are (SOLAR_SYSTEM_PLANETS)` is equivalent to `some(PLANETS) are some(SOLAR_SYSTEM_PLANETS)` 1 or more one one side can match 1 or more on the other side.
-	- `(SOLAR_SYSTEM_PLANETS) are (NEAR_PLANETS)` is equivalent to `all(SOLAR_SYSTEM_PLANETS) are some(NEAR_PLANETS)` all on one side must match all on the other side
-	- `only one of(SOLAR_SYSTEM_PLANETS) are (HABITAL_PLANETS)` is equivalent to `only one of(SOLAR_SYSTEM_PLANETS) are within(HABITAL_PLANETS)` 
+	- `some(PLANETS) are (SOLAR_SYSTEM_PLANETS)` is equivalent to `some(PLANETS) are some(SOLAR_SYSTEM_PLANETS)` *1 or more one one side can match 1 or more on the other side.*
+	- `(SOLAR_SYSTEM_PLANETS) are (NEAR_PLANETS)` is equivalent to `all(SOLAR_SYSTEM_PLANETS) are some(NEAR_PLANETS)` *all on one side must match one or more on the other side.*
+	- `only one of(SOLAR_SYSTEM_PLANETS) are (HABITAL_PLANETS)` is equivalent to `only one of(SOLAR_SYSTEM_PLANETS) are within(HABITAL_PLANETS)` *only one on one side can match one or more on the other side.* 
  
 ### Implication
 ----------------
