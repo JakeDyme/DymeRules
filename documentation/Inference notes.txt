@@ -1,0 +1,46 @@
+For conjunction
+if two worlds share a value for a given attribute,
+for all attributes that have the same value, we can assume that thos values are implications of eachother.
+We create the cartesian implciation of those attributes.
+The attributes cannot equal the same value in all worlds.
+The attrubte implications are then evaluated against other worlds.
+Example:
+	if sky = blue
+	then planet = earth
+Occurrs in two worlds
+
+Building disjunctive lists.
+If two attributes equal the same values across two different worlds,
+then the attributes can be said to imply one another.
+Each attribute set carries relational weight for all kinds of relations.
+Types of relation: 
+- Direct-implication: When ATT1 = VAL-X then ATT2 = VAL-A, and, When ATT2 = VAL-A then ATT1 = VAL-X
+- Disjunctive-implication:  When ATT1 = VAL-X or VAL-Z then ATT2 = VAL-A, or, When ATT2 = VAL-A then ATT1 = VAL-X or VAL-Z
+- Conjunctive-implication: When ATT1 = VAL-X and ATT5 = VAL-K then ATT2 = VAL-A, or, When 
+
+To prove Direct-Implication:
+Attempt to find any world in whisch the implication is false.
+
+To find Direct-Implication
+	Find any two worlds in which the values of two attributes are the same for each attribute.
+	For instance: World1: {planet:Earth, sky:blue, surface:brown}, World1: {planet:Pluto, sky:blue, surface:brown}
+		Inferred Implication: When sky is blue then surface is brown, When surface is brown then sky is blue.
+
+Validating a relationship between two attributes:
+
+Building a two tier inference engine.
+A set of rules is used to determine another set of rules.
+
+For instance. If AttributeX = Value1 in all worlds.
+
+Quantify evaluations.
+"For all worlds an attribute (equals) a value"
+"There exists some world in which an attribute (equals) a value"
+"For all attributes in a world each attribute (equals?) some value"
+"There exists an attribute in a world that (equals) some value"
+"For any x worlds, an attribute (equals) a value"      ---x can be a number or quantifier such as "all" or "some"
+
+Quantify Library
+
+
+Inference Rules:
