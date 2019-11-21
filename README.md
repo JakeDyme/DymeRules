@@ -110,7 +110,7 @@ Running the rule engine over your configs when you do a deployment allows you to
 ---
 The Easy-Rules syntax is meant to be as close to natural language as possible, making rules easy to read and write.
 
-###Constructs
+### Constructs
 -----------
 - Implication: `if ... then ...`
 - Conjunction: `... and ...`
@@ -205,7 +205,7 @@ We have the following worlds:
 - world-5 {LOCATION:Home,  SHIRT:button,  SHOES:closed, HAT: none }
 - world-6 {LOCATION:Shop, SHIRT:t-shirt, SHOES:open,   HAT: none }
 
-####1. Get the distinct list of facts from all worlds 
+#### 1. Get the distinct list of facts from all worlds 
 (a "fact" is a combination of an attribute and its value)
 - LOCATION:Home
 - LOCATION:Work
@@ -218,7 +218,7 @@ We have the following worlds:
 - SHOES:closed
 - HAT:none
 
-####2. Exclude facts that are the same in every world. 
+#### 2. Exclude facts that are the same in every world. 
 We remove constants. They don't give us any clues about the state of the world since they are always the same. In this list "HAT:none" was a constant fact.
 - LOCATION:Home
 - LOCATION:Work
@@ -230,7 +230,7 @@ We remove constants. They don't give us any clues about the state of the world s
 - SHOES:open
 - SHOES:closed
 
-####3. Get all facts that repeat in more than one world.
+#### 3. Get all facts that repeat in more than one world.
 - LOCATION:Home 	{World:1, World:5}
 - LOCATION:Shop 	{World:4, World:6}
 - SHIRT:t-shirt 	{World:1, World:4, World:6}
@@ -238,7 +238,7 @@ We remove constants. They don't give us any clues about the state of the world s
 - SHOES:open		{World:1, World:4, World:6}
 - SHOES:closed		{World:2, World:3, World:5}
 
-####4. Get all facts that repeat in the same worlds.
+#### 4. Get all facts that repeat in the same worlds.
 - (LOCATION:Home) repeats in {World:1, World:5}
 - (SHOES:open)    repeats when (LOCATION:Shop) repeats in  {World:4, World:6}
 - (SHIRT:t-shirt) repeats when (SHOES:open)    repeats in  {World:1, World:4, World:6}
@@ -246,7 +246,7 @@ We remove constants. They don't give us any clues about the state of the world s
 - (SHIRT:button)  repeats when (SHOES:closed)  repeats in {World:2, World:3, World:5}
 - (SHOES:closed)  repeats when (SHIRT:button)  repeats in {World:2, World:3, World:5}
 
-####5. Convert into simple implications.
+#### 5. Convert into simple implications.
 Since there must be at least two facts to build an implication, (LOCATION:Home) falls away.
 It can be said that when (LOCATION) is (Shop) then (SHOES) are (open) since every time we're at the shop, our shoes are open
 this implies that our shoes are open BECAUSE we're at the shop. We can therefore build an implication from this.
